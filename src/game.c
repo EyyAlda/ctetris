@@ -37,6 +37,12 @@ void gameOver(){
 
 }
 
+void key_handling(){
+
+}
+
+
+
 //creates a random new Tetromino
 void createTetromino(){
     char possibleTetrominos[] = {'J', 'L', 'O', 'I', 'S', 'Z', 'T'};
@@ -327,6 +333,192 @@ void moveDown(){
     }
 }
 
+void rotate_tetromino(){
+    switch(currentTetrominoPtr->fieldValue){
+        case 'L':
+            switch(currentTetrominoPtr->rotation){
+                case '1':
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 += 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 -= 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->x4 -= 2;
+
+                                currentTetrominoPtr->rotation = 2;
+                                placeTetromino();
+                            }
+                        }
+                    }
+                    break;
+                case '2':
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->y4 -= 2;
+
+                                currentTetrominoPtr->rotation = 3;
+                                placeTetromino();
+                            }
+                        }
+                    }
+                    break;
+                case '3':
+                    if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 -= 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 += 1;
+                                currentTetrominoPtr->x4 += 2;
+
+                                currentTetrominoPtr->rotation = 3;
+                                placeTetromino();
+                            }
+                        }
+                    }
+                    break;
+                case '4':
+
+
+                    currentTetrominoPtr->rotation = 1;
+                    break;
+            }
+            break;
+        case 'J':
+            switch(currentTetrominoPtr->rotation){
+                case '1':
+                    
+
+                    currentTetrominoPtr->rotation = 2;
+                    break;
+                case '2':
+
+
+                    currentTetrominoPtr->rotation = 3;
+                    break;
+                case '3':
+
+
+                    currentTetrominoPtr->rotation = 4;
+                    break;
+                case '4':
+
+
+                    currentTetrominoPtr->rotation = 1;
+                    break;
+            }
+            break;
+        case 'I':
+            switch(currentTetrominoPtr->rotation){
+                case '1':
+                    
+
+                    currentTetrominoPtr->rotation = 2;
+                    break;
+                case '2':
+
+
+                    currentTetrominoPtr->rotation = 3;
+                    break;
+                case '3':
+
+
+                    currentTetrominoPtr->rotation = 4;
+                    break;
+                case '4':
+
+
+                    currentTetrominoPtr->rotation = 1;
+                    break;
+            }
+            break;
+        case 'Z':
+            switch(currentTetrominoPtr->rotation){
+                case '1':
+                    
+
+                    currentTetrominoPtr->rotation = 2;
+                    break;
+                case '2':
+
+
+                    currentTetrominoPtr->rotation = 3;
+                    break;
+                case '3':
+
+
+                    currentTetrominoPtr->rotation = 4;
+                    break;
+                case '4':
+
+
+                    currentTetrominoPtr->rotation = 1;
+                    break;
+            }
+            break;
+        case 'S':
+            switch(currentTetrominoPtr->rotation){
+                case '1':
+                    
+
+                    currentTetrominoPtr->rotation = 2;
+                    break;
+                case '2':
+
+
+                    currentTetrominoPtr->rotation = 3;
+                    break;
+                case '3':
+
+
+                    currentTetrominoPtr->rotation = 4;
+                    break;
+                case '4':
+
+
+                    currentTetrominoPtr->rotation = 1;
+                    break;
+            }
+            break;
+        case 'T':
+            switch(currentTetrominoPtr->rotation){
+                case '1':
+                    
+
+                    currentTetrominoPtr->rotation = 2;
+                    break;
+                case '2':
+
+
+                    currentTetrominoPtr->rotation = 3;
+                    break;
+                case '3':
+
+
+                    currentTetrominoPtr->rotation = 4;
+                    break;
+                case '4':
+
+
+                    currentTetrominoPtr->rotation = 1;
+                    break;
+            }
+            break;
+        default:
+            break;
+    }
+}
 
 
 void prepare(){
