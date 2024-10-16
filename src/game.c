@@ -41,6 +41,7 @@ Tetromino *currentTetrominoPtr = NULL;
 
 //creates a copy of the Tetromino struct to store current Tetromino values
 void createCurrentTetromino(){
+    printf("creating Tetromino\n");
     currentTetrominoPtr = (Tetromino *)malloc(sizeof(Tetromino));
 
     if (currentTetrominoPtr == NULL) {
@@ -72,7 +73,7 @@ void createTetromino(){
     int randomTetromino = min + rand() % (max - min + 1);
 
     createCurrentTetromino();
-    
+    printf("setting default values\n");
     //set the default values, including starting position, for each possible tetromino
     switch(possibleTetrominos[randomTetromino]){
         case 'J':
@@ -261,6 +262,7 @@ void tetrominoSettled(){
 
 //checks if an about to be placed tetromino can be placed. If the space is taken it returns 0
 int checkForSpace(){
+    printf("checking if space is available\n");
     if (fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] == '0') {
         if (fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] == '0') {
             if (fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] == '0') {
@@ -274,6 +276,7 @@ int checkForSpace(){
 }
 
 void placeTetromino(){ 
+    printf("placing the tetromino\n");
     fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = currentTetrominoPtr->fieldValue;
     fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = currentTetrominoPtr->fieldValue;
     fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = currentTetrominoPtr->fieldValue;
@@ -360,6 +363,7 @@ void moveDown(){
 }
 
 void move_above_down(int row){
+    printf("moving upper placed tetrominos down\n");
     for (int x = 0; x < 9; x++){
         fieldValues[row][x] = '0';
     }
@@ -375,6 +379,7 @@ void move_above_down(int row){
 
 
 void check_for_full_row(){
+    printf("checking if a row is filled\n");
     int row_is_full = 0;
     for (int y = 19; y > 0; y--){
         int spaces_taken = 0;
@@ -393,6 +398,7 @@ void check_for_full_row(){
 }
 
 void rotate_tetromino(){
+    printf("rotating Tetromino\n");
     pthread_mutex_lock(&currentTetrominoPtr->lock);
     switch(currentTetrominoPtr->fieldValue){
         case 'L':
@@ -866,6 +872,7 @@ void rotate_tetromino(){
 }
 
 void settle_tetromino(){
+    printf("checking if a tetromino should settle\n");
     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1] != '0' && fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1] != currentTetrominoPtr->fieldValue){
         if (fieldValues[currentTetrominoPtr->y2 + 1][currentTetrominoPtr->x2] != '0' && fieldValues[currentTetrominoPtr->y2 + 1][currentTetrominoPtr->x2] != currentTetrominoPtr->fieldValue){
             if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3] != '0' && fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3] != currentTetrominoPtr->fieldValue){
@@ -881,6 +888,7 @@ void settle_tetromino(){
 
 
 void prepare(){
+    printf("preparing playing field\n");
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 10; j++) {
             fieldValues[i][j] = '0';
@@ -889,13 +897,17 @@ void prepare(){
 }
 
 void gameLoop(){
+    printf("entering the main loop\n");
     prepare();
     while (!gameFinished) {
         if (currentTetrominoPtr == NULL && !gameFinished){
             createTetromino();
         }
+        printf("executing moveDown\n");
         moveDown();
+        printf("executing showPlayingField\n");
         showPlayingField();
+        printf("sleeping for one second\n");
         sleep(1);
         settle_tetromino();
     }
