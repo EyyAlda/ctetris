@@ -1,4 +1,8 @@
 #include <stdio.h>
+#include <gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk/gdk.h>
+#include <glib-2.0/glib.h>
+#include <gtk-4.0/gtk/css/gtkcss.h>
 #include <gtk-4.0/gtk/gtk.h>
 #include <stdlib.h>
 #include <time.h>
@@ -186,7 +190,13 @@ void createTetromino(){
 }
 
 void showPlayingField(){
-
+    for(int y = 0; y < 19; y++){
+        printf("<!");
+        for(int x = 0; x < 9; x++){
+            printf("%c",fieldValues[y][x]);
+        }
+        printf("!>\n");
+    }
 
 
 
@@ -245,6 +255,8 @@ void tetrominoSettled(){
             break;
     }
     free(currentTetrominoPtr);
+    currentTetrominoPtr = NULL;
+    gameFinished = 1;
 }
 
 //checks if an about to be placed tetromino can be placed. If the space is taken it returns 0
@@ -348,7 +360,17 @@ void moveDown(){
 }
 
 void move_above_down(int row){
-
+    for (int x = 0; x < 9; x++){
+        fieldValues[row][x] = '0';
+    }
+    for (int y = row - 1; y > 0; y--){
+        for (int x = 0; x < 9; x++){
+            if (fieldValues[y][x] != '0' && fieldValues[y][x] != 'L' && fieldValues[y][x] != 'J' && fieldValues[y][x] != 'T' && fieldValues[y][x] != 'S' && fieldValues[y][x] != 'Z' && fieldValues[y][x] != 'O' && fieldValues[y][x] != 'I'){
+                fieldValues[y + 1][x] = fieldValues[y][x];
+                fieldValues[y][x] = '0';
+            }
+        }
+    }
 }
 
 
@@ -362,12 +384,11 @@ void check_for_full_row(){
             }
         }
         if (spaces_taken == 10) {
-            row_is_full = y;
+            y = row_is_full;
             move_above_down(y);
-            row_is_full = 0;
         }
+            row_is_full = 0;
     }
-    clearTetromino();
     showPlayingField();
 }
 
@@ -844,6 +865,20 @@ void rotate_tetromino(){
     pthread_mutex_unlock(&currentTetrominoPtr->lock);
 }
 
+void settle_tetromino(){
+    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1] != '0' && fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1] != currentTetrominoPtr->fieldValue){
+        if (fieldValues[currentTetrominoPtr->y2 + 1][currentTetrominoPtr->x2] != '0' && fieldValues[currentTetrominoPtr->y2 + 1][currentTetrominoPtr->x2] != currentTetrominoPtr->fieldValue){
+            if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3] != '0' && fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3] != currentTetrominoPtr->fieldValue){
+                if (fieldValues[currentTetrominoPtr->y4 + 1][currentTetrominoPtr->x4] != '0' && fieldValues[currentTetrominoPtr->y4 + 1][currentTetrominoPtr->x4] != currentTetrominoPtr->fieldValue){
+                    tetrominoSettled();
+                }
+            }
+        }
+    }
+}
+
+
+
 
 void prepare(){
     for (int i = 0; i < 20; i++) {
@@ -856,9 +891,23 @@ void prepare(){
 void gameLoop(){
     prepare();
     while (!gameFinished) {
-
+        if (currentTetrominoPtr == NULL && !gameFinished){
+            createTetromino();
+        }
+        moveDown();
+        showPlayingField();
+        sleep(1);
+        settle_tetromino();
     }
-    if (currentTetrominoPtr != NULL) free(currentTetrominoPtr);
+    if (currentTetrominoPtr != NULL){
+        free(currentTetrominoPtr);
+        currentTetrominoPtr = NULL;
+    }
+}
+
+int main(){
+    gameLoop();
+    return 0;
 }
 
 
