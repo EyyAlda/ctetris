@@ -1,10 +1,8 @@
 #include <stdio.h>
-#include <gtk/gtk.h>
+#include <gtk-4.0/gtk/gtk.h>
 #include <stdlib.h>
 #include <time.h>
 #include <pthread.h>
-#include "../include/tetromino.h"
-#include "../include/key_listener.h"
 
 //playing field
 char fieldValues[20][10];
@@ -20,6 +18,20 @@ char fieldValues[20][10];
 int movingTetromino = 0;
 int gameFinished = 0;
 
+typedef struct{
+    int y1;
+    int y2;
+    int y3;
+    int y4;
+    int x1;
+    int x2;
+    int x3;
+    int x4;
+    int rotation;
+    char fieldValue;
+    pthread_mutex_t lock;
+    int game_over;
+} Tetromino;
 
 Tetromino *currentTetrominoPtr = NULL;
 
@@ -40,6 +52,8 @@ void gameOver(){
 void key_handling(){
 
 }
+
+
 
 
 
@@ -152,7 +166,7 @@ void createTetromino(){
             currentTetrominoPtr->y1 = 0;
             currentTetrominoPtr->y2 = 1;
             currentTetrominoPtr->y3 = 2;
-            currentTetrominoPtr->y4 = 2;
+            currentTetrominoPtr->y4 = 1;
             currentTetrominoPtr->x1 = 5;
             currentTetrominoPtr->x2 = 5;
             currentTetrominoPtr->x3 = 5;
@@ -333,7 +347,32 @@ void moveDown(){
     }
 }
 
+void move_above_down(int row){
+
+}
+
+
+void check_for_full_row(){
+    int row_is_full = 0;
+    for (int y = 19; y > 0; y--){
+        int spaces_taken = 0;
+        for (int x = 9; x > 0; x--){
+            if (fieldValues[y][x] != '0' && fieldValues[y][x] != 'L' && fieldValues[y][x] != 'J' && fieldValues[y][x] != 'I' && fieldValues[y][x] != 'O' && fieldValues[y][x] != 'S' && fieldValues[y][x] != 'Z' && fieldValues[y][x] != 'T'){
+                spaces_taken++;
+            }
+        }
+        if (spaces_taken == 10) {
+            row_is_full = y;
+            move_above_down(y);
+            row_is_full = 0;
+        }
+    }
+    clearTetromino();
+    showPlayingField();
+}
+
 void rotate_tetromino(){
+    pthread_mutex_lock(&currentTetrominoPtr->lock);
     switch(currentTetrominoPtr->fieldValue){
         case 'L':
             switch(currentTetrominoPtr->rotation){
@@ -354,6 +393,7 @@ void rotate_tetromino(){
                         }
                     }
                     break;
+
                 case '2':
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
@@ -371,6 +411,7 @@ void rotate_tetromino(){
                         }
                     }
                     break;
+                    
                 case '3':
                     if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0'){
@@ -382,142 +423,425 @@ void rotate_tetromino(){
                                 currentTetrominoPtr->y3 += 1;
                                 currentTetrominoPtr->x4 += 2;
 
+                                currentTetrominoPtr->rotation = 4;
+                                placeTetromino();
+                            }
+                        }
+                    }
+                    break;
+
+                case '4':
+                    if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 += 1;
+                                currentTetrominoPtr->y1 -= 1;
+                                currentTetrominoPtr->x3 -= 1;
+                                currentTetrominoPtr->y3 += 1;
+                                currentTetrominoPtr->y4 += 2;
+
+                                currentTetrominoPtr->rotation = 1;
+                                placeTetromino();
+                            }
+                        }
+                    }
+                    break;
+            }
+        case 'J':
+            switch(currentTetrominoPtr->rotation){
+                case '1':
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 += 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 -= 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->y4 -= 2;
+
+                                currentTetrominoPtr->rotation = 2;
+                                placeTetromino();
+                            }
+                        }
+                    }
+                    break;
+
+
+                case '2':
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->x4 += 2;
+
                                 currentTetrominoPtr->rotation = 3;
                                 placeTetromino();
                             }
                         }
                     }
                     break;
-                case '4':
 
 
-                    currentTetrominoPtr->rotation = 1;
-                    break;
-            }
-            break;
-        case 'J':
-            switch(currentTetrominoPtr->rotation){
-                case '1':
-                    
-
-                    currentTetrominoPtr->rotation = 2;
-                    break;
-                case '2':
-
-
-                    currentTetrominoPtr->rotation = 3;
-                    break;
                 case '3':
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 += 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 -= 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->y4 += 2;
 
-
-                    currentTetrominoPtr->rotation = 4;
+                                currentTetrominoPtr->rotation = 4;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
+
                 case '4':
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->x4 -= 2;
 
-
-                    currentTetrominoPtr->rotation = 1;
+                                currentTetrominoPtr->rotation = 1;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
             }
-            break;
         case 'I':
             switch(currentTetrominoPtr->rotation){
                 case '1':
-                    
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4 - 2] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 += 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 -= 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->x4 -= 2;
+                                currentTetrominoPtr->y4 -= 2;
 
-                    currentTetrominoPtr->rotation = 2;
+                                currentTetrominoPtr->rotation = 2;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
+
+
                 case '2':
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4 + 2] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->x4 += 2;
+                                currentTetrominoPtr->y4 -= 2;
 
-
-                    currentTetrominoPtr->rotation = 3;
+                                currentTetrominoPtr->rotation = 3;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
+
+
                 case '3':
+                    if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4 + 2] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 -= 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 += 1;
+                                currentTetrominoPtr->x4 += 2;
+                                currentTetrominoPtr->y4 += 2;
 
-
-                    currentTetrominoPtr->rotation = 4;
+                                currentTetrominoPtr->rotation = 4;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
+
+
                 case '4':
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4 + 2] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->x4 += 2;
+                                currentTetrominoPtr->y4 -= 2;
 
-
-                    currentTetrominoPtr->rotation = 1;
+                                currentTetrominoPtr->rotation = 1;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
+
+
             }
-            break;
         case 'Z':
             switch(currentTetrominoPtr->rotation){
                 case '1':
-                    
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 += 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->x4 -= 2;
 
-                    currentTetrominoPtr->rotation = 2;
+                                currentTetrominoPtr->rotation = 2;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
+
+
                 case '2':
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 += 1;
+                                currentTetrominoPtr->x4 += 2;
 
-
-                    currentTetrominoPtr->rotation = 3;
+                                currentTetrominoPtr->rotation = 3;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
+
+
                 case '3':
+                    if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 -= 1;
+                                currentTetrominoPtr->x3 -= 1;
+                                currentTetrominoPtr->y3 += 1;
+                                currentTetrominoPtr->y4 += 2;
 
-
-                    currentTetrominoPtr->rotation = 4;
+                                currentTetrominoPtr->rotation = 4;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
+
+
                 case '4':
+                    if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 += 1;
+                                currentTetrominoPtr->y1 -= 1;
+                                currentTetrominoPtr->x3 -= 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->x4 -= 2;
 
-
-                    currentTetrominoPtr->rotation = 1;
+                                currentTetrominoPtr->rotation = 1;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
+
+
             }
-            break;
         case 'S':
             switch(currentTetrominoPtr->rotation){
                 case '1':
-                    
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 += 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 -= 1;
+                                currentTetrominoPtr->y3 += 1;
+                                currentTetrominoPtr->x4 -= 2;
 
-                    currentTetrominoPtr->rotation = 2;
+                                currentTetrominoPtr->rotation = 2;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
+
                 case '2':
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 -= 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->y4 -= 2;
 
-
-                    currentTetrominoPtr->rotation = 3;
+                                currentTetrominoPtr->rotation = 3;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
+
+
                 case '3':
+                    if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 -= 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->x4 += 2;
 
-
-                    currentTetrominoPtr->rotation = 4;
+                                currentTetrominoPtr->rotation = 4;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
+
+
                 case '4':
+                    if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 += 1;
+                                currentTetrominoPtr->y1 -= 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 += 1;
+                                currentTetrominoPtr->y4 += 2;
 
-
-                    currentTetrominoPtr->rotation = 1;
+                                currentTetrominoPtr->rotation = 1;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
             }
-            break;
+
         case 'T':
             switch(currentTetrominoPtr->rotation){
                 case '1':
-                    
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 - 1][currentTetrominoPtr->x4 + 1] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 += 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 -= 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->x4 += 1;
+                                currentTetrominoPtr->y4 -= 1;
 
-                    currentTetrominoPtr->rotation = 2;
+                                currentTetrominoPtr->rotation = 2;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
                 case '2':
+                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 + 1][currentTetrominoPtr->x4 + 1] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 += 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 -= 1;
+                                currentTetrominoPtr->x4 += 1;
+                                currentTetrominoPtr->y4 += 1;
 
-
-                    currentTetrominoPtr->rotation = 3;
+                                currentTetrominoPtr->rotation = 3;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
                 case '3':
+                    if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 -= 1;
+                                currentTetrominoPtr->y1 -= 1;
+                                currentTetrominoPtr->x3 += 1;
+                                currentTetrominoPtr->y3 += 1;
+                                currentTetrominoPtr->y4 += 1;
+                                currentTetrominoPtr->x4 -= 1;
 
-
-                    currentTetrominoPtr->rotation = 4;
+                                currentTetrominoPtr->rotation = 4;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
                 case '4':
+                    if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0'){
+                        if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0'){
+                            if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0'){
+                                clearTetromino();
+                                currentTetrominoPtr->x1 += 1;
+                                currentTetrominoPtr->y1 -= 1;
+                                currentTetrominoPtr->x3 -= 1;
+                                currentTetrominoPtr->y3 += 1;
+                                currentTetrominoPtr->x4 -= 1;
+                                currentTetrominoPtr->y4 -= 1;
 
-
-                    currentTetrominoPtr->rotation = 1;
+                                currentTetrominoPtr->rotation = 1;
+                                placeTetromino();
+                            }
+                        }
+                    }
                     break;
             }
-            break;
         default:
             break;
     }
+    pthread_mutex_unlock(&currentTetrominoPtr->lock);
 }
 
 
