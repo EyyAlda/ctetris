@@ -4,7 +4,6 @@
 #include <time.h>
 #include <pthread.h>
 #include "../include/tetromino.h"
-#include "../include/key_listener.h"
 
 //playing field
 char fieldValues[20][10];
