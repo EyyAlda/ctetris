@@ -63,7 +63,20 @@ void key_handling(){
 
 }
 
-
+//checks if an about to be placed tetromino can be placed. If the space is taken it returns 0
+int checkForSpace(){
+    printf("checking if space is available\n");
+    if (fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] == '0') {
+        if (fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] == '0') {
+            if (fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] == '0') {
+                if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] == '0') {
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
 
 
 
@@ -78,6 +91,7 @@ void createTetromino(){
     int randomTetromino = min + rand() % (max - min + 1);
 
     createCurrentTetromino();
+    
     printf("setting default values\n");
     //set the default values, including starting position, for each possible tetromino
     switch(possibleTetrominos[randomTetromino]){
@@ -192,6 +206,10 @@ void createTetromino(){
             exit(1);
             break;
     }
+    if (!checkForSpace()){
+        printf("not enough Space\n");
+        gameOver();
+    }
 
 }
 
@@ -272,20 +290,7 @@ void tetrominoSettled(){
     
 }
 
-//checks if an about to be placed tetromino can be placed. If the space is taken it returns 0
-int checkForSpace(){
-    printf("checking if space is available\n");
-    if (fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] == '0') {
-        if (fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] == '0') {
-            if (fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] == '0') {
-                if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] == '0') {
-                    return 1;
-                }
-            }
-        }
-    }
-    return 0;
-}
+
 
 void placeTetromino(){ 
     printf("placing the tetromino\n");
