@@ -51,7 +51,12 @@ void createCurrentTetromino(){
 }
 
 void gameOver(){
-
+    printf("gameFinished!\n");
+    if (currentTetrominoPtr != NULL){
+        free(currentTetrominoPtr);
+        currentTetrominoPtr = NULL;
+    }
+    exit(1);
 }
 
 void key_handling(){
@@ -82,10 +87,10 @@ void createTetromino(){
             currentTetrominoPtr->y2 = 1;
             currentTetrominoPtr->y3 = 2;
             currentTetrominoPtr->y4 = 2;
-            currentTetrominoPtr->x1 = 5;
-            currentTetrominoPtr->x2 = 5;
-            currentTetrominoPtr->x3 = 5;
-            currentTetrominoPtr->x4 = 4;
+            currentTetrominoPtr->x1 = 4;
+            currentTetrominoPtr->x2 = 4;
+            currentTetrominoPtr->x3 = 4;
+            currentTetrominoPtr->x4 = 3;
             currentTetrominoPtr->fieldValue = 'J';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
@@ -97,10 +102,10 @@ void createTetromino(){
             currentTetrominoPtr->y2 = 1;
             currentTetrominoPtr->y3 = 2;
             currentTetrominoPtr->y4 = 2;
-            currentTetrominoPtr->x1 = 5;
-            currentTetrominoPtr->x2 = 5;
-            currentTetrominoPtr->x3 = 5;
-            currentTetrominoPtr->x4 = 6;
+            currentTetrominoPtr->x1 = 4;
+            currentTetrominoPtr->x2 = 4;
+            currentTetrominoPtr->x3 = 4;
+            currentTetrominoPtr->x4 = 5;
             currentTetrominoPtr->fieldValue = 'L';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
@@ -112,10 +117,10 @@ void createTetromino(){
             currentTetrominoPtr->y2 = 0;
             currentTetrominoPtr->y3 = 1;
             currentTetrominoPtr->y4 = 1;
-            currentTetrominoPtr->x1 = 5;
-            currentTetrominoPtr->x2 = 6;
-            currentTetrominoPtr->x3 = 5;
-            currentTetrominoPtr->x4 = 6;
+            currentTetrominoPtr->x1 = 4;
+            currentTetrominoPtr->x2 = 5;
+            currentTetrominoPtr->x3 = 4;
+            currentTetrominoPtr->x4 = 5;
             currentTetrominoPtr->fieldValue = 'O';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
@@ -127,10 +132,10 @@ void createTetromino(){
             currentTetrominoPtr->y2 = 1;
             currentTetrominoPtr->y3 = 2;
             currentTetrominoPtr->y4 = 3;
-            currentTetrominoPtr->x1 = 5;
-            currentTetrominoPtr->x2 = 5;
-            currentTetrominoPtr->x3 = 5;
-            currentTetrominoPtr->x4 = 5;
+            currentTetrominoPtr->x1 = 4;
+            currentTetrominoPtr->x2 = 4;
+            currentTetrominoPtr->x3 = 4;
+            currentTetrominoPtr->x4 = 4;
             currentTetrominoPtr->fieldValue = 'I';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
@@ -142,11 +147,11 @@ void createTetromino(){
             currentTetrominoPtr->y2 = 1;
             currentTetrominoPtr->y3 = 1;
             currentTetrominoPtr->y4 = 2;
-            currentTetrominoPtr->x1 = 5;
-            currentTetrominoPtr->x2 = 5;
-            currentTetrominoPtr->x3 = 6;
-            currentTetrominoPtr->x4 = 6;
-            currentTetrominoPtr->fieldValue = 'J';
+            currentTetrominoPtr->x1 = 4;
+            currentTetrominoPtr->x2 = 4;
+            currentTetrominoPtr->x3 = 5;
+            currentTetrominoPtr->x4 = 5;
+            currentTetrominoPtr->fieldValue = 'S';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
             pthread_mutex_unlock(&currentTetrominoPtr->lock);
@@ -176,7 +181,7 @@ void createTetromino(){
             currentTetrominoPtr->x2 = 5;
             currentTetrominoPtr->x3 = 5;
             currentTetrominoPtr->x4 = 4;
-            currentTetrominoPtr->fieldValue = 'J';
+            currentTetrominoPtr->fieldValue = 'T';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
             pthread_mutex_unlock(&currentTetrominoPtr->lock);
@@ -191,8 +196,8 @@ void createTetromino(){
 }
 
 void showPlayingField(){
-    for(int y = 0; y < 19; y++){
-        printf("<!");
+    for(int y = 0; y < 20; y++){
+        printf("%d<!", y);
         for(int x = 0; x < 9; x++){
             printf("%c",fieldValues[y][x]);
         }
@@ -205,6 +210,7 @@ void showPlayingField(){
 }
 
 void tetrominoSettled(){
+    printf("setteling tetromino\n");
     switch(currentTetrominoPtr->fieldValue) {
         case 'L':
             fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '1';
@@ -255,9 +261,15 @@ void tetrominoSettled(){
             fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = '1';
             break;
     }
+    printf("checking if reached the top row\n");
+    if (currentTetrominoPtr->y4 == 0 || currentTetrominoPtr->y3 == 0 || currentTetrominoPtr->y2 == 0 || currentTetrominoPtr->y1 == 0){
+        printf("game finished\n");
+        gameFinished = 1;
+    }
+    printf("resetting pointer\n");
     free(currentTetrominoPtr);
     currentTetrominoPtr = NULL;
-    gameFinished = 1;
+    
 }
 
 //checks if an about to be placed tetromino can be placed. If the space is taken it returns 0
@@ -284,11 +296,34 @@ void placeTetromino(){
 }
 
 void clearTetromino(){
+    printf("clearing tetromino\n");
     fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '0';
     fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = '0';
     fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = '0';
     fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = '0';
 
+}
+void settle_tetromino(){
+    printf("checking if a tetromino should settle\n");
+    if (currentTetrominoPtr->y1 == 19 || currentTetrominoPtr->y2 == 19 || currentTetrominoPtr->y3 == 19 || currentTetrominoPtr->y4 == 19){
+        tetrominoSettled();
+        goto skip_check;
+    }
+    int break_loop = 0;
+    for (int y = 19; y > 0; y--){
+        for (int x = 0; x < 9; x++){
+            if (fieldValues[y][x] == currentTetrominoPtr->fieldValue){
+                if (fieldValues[y + 1][x] != '0' && fieldValues[y + 1][x] != currentTetrominoPtr->fieldValue){
+                    tetrominoSettled();
+                    break_loop = 1;
+                    break;
+                }
+            }
+        }
+        if (break_loop) break;
+    }
+skip_check:
+    printf("after skip_check\n");
 }
 
 void moveLeft(){
@@ -343,7 +378,7 @@ void moveDown(){
         for (int y = 0; y < sizeof(fieldValues)/sizeof(char); y++){
             for (int x = 0; x < (int)sizeof(fieldValues[y])/(int)sizeof(char); x++) {
                 if (fieldValues[y][x] == currentTetrominoPtr->fieldValue) {
-                    if (fieldValues[y + 1][x] != '0' && fieldValues[y + 1][x] != currentTetrominoPtr->fieldValue) {
+                    if (fieldValues[y + 1][x] != '0' && fieldValues[y + 1][x] != currentTetrominoPtr->fieldValue && y + 1 > 18) {
                         canMove = 0;
                     }
                 }
@@ -357,7 +392,7 @@ void moveDown(){
             currentTetrominoPtr->y4++;
             placeTetromino();
         } else {
-            tetrominoSettled();
+            settle_tetromino();
         }
     }
 }
@@ -871,18 +906,7 @@ void rotate_tetromino(){
     pthread_mutex_unlock(&currentTetrominoPtr->lock);
 }
 
-void settle_tetromino(){
-    printf("checking if a tetromino should settle\n");
-    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1] != '0' && fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1] != currentTetrominoPtr->fieldValue){
-        if (fieldValues[currentTetrominoPtr->y2 + 1][currentTetrominoPtr->x2] != '0' && fieldValues[currentTetrominoPtr->y2 + 1][currentTetrominoPtr->x2] != currentTetrominoPtr->fieldValue){
-            if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3] != '0' && fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3] != currentTetrominoPtr->fieldValue){
-                if (fieldValues[currentTetrominoPtr->y4 + 1][currentTetrominoPtr->x4] != '0' && fieldValues[currentTetrominoPtr->y4 + 1][currentTetrominoPtr->x4] != currentTetrominoPtr->fieldValue){
-                    tetrominoSettled();
-                }
-            }
-        }
-    }
-}
+
 
 
 
