@@ -15,6 +15,7 @@ pkg_check_modules(GLIB REQUIRED IMPORTED_TARGET glib-2.0)
 
 add_executable(${PROJECT_NAME} 
     src/game.c
+    src/main.c
 )
 
 # Link libraries
@@ -27,6 +28,7 @@ target_link_libraries(${PROJECT_NAME}
 # Include directories
 target_include_directories(${PROJECT_NAME}
     PRIVATE
+    include/
     ${GTK4_INCLUDE_DIRS}
     ${GLIB_INCLUDE_DIRS}
 )
