@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <pthread.h>
+#include "../include/game.h"
 
 //playing field
 char fieldValues[20][10];
@@ -22,20 +23,6 @@ char fieldValues[20][10];
 int movingTetromino = 0;
 int gameFinished = 0;
 
-typedef struct{
-    int y1;
-    int y2;
-    int y3;
-    int y4;
-    int x1;
-    int x2;
-    int x3;
-    int x4;
-    int rotation;
-    char fieldValue;
-    pthread_mutex_t lock;
-    int game_over;
-} Tetromino;
 
 Tetromino *currentTetrominoPtr = NULL;
 
@@ -285,6 +272,7 @@ void tetrominoSettled(){
         gameFinished = 1;
     }
     printf("resetting pointer\n");
+    pthread_mutex_unlock(&currentTetrominoPtr->lock);
     free(currentTetrominoPtr);
     currentTetrominoPtr = NULL;
     
@@ -310,7 +298,9 @@ void clearTetromino(){
 }
 void settle_tetromino(){
     printf("checking if a tetromino should settle\n");
+    pthread_mutex_lock(&currentTetrominoPtr->lock);
     if (currentTetrominoPtr->y1 == 19 || currentTetrominoPtr->y2 == 19 || currentTetrominoPtr->y3 == 19 || currentTetrominoPtr->y4 == 19){
+        printf("reached the lowest point\n");
         tetrominoSettled();
         goto skip_check;
     }
@@ -319,6 +309,7 @@ void settle_tetromino(){
         for (int x = 0; x < 9; x++){
             if (fieldValues[y][x] == currentTetrominoPtr->fieldValue){
                 if (fieldValues[y + 1][x] != '0' && fieldValues[y + 1][x] != currentTetrominoPtr->fieldValue){
+                    printf("found tetromino below\n");
                     tetrominoSettled();
                     break_loop = 1;
                     break;
@@ -329,9 +320,17 @@ void settle_tetromino(){
     }
 skip_check:
     printf("after skip_check\n");
+    if (currentTetrominoPtr != NULL){
+        if(pthread_mutex_trylock(&currentTetrominoPtr->lock) == EBUSY) {
+            pthread_mutex_unlock(&currentTetrominoPtr->lock);
+        } else {
+            pthread_mutex_unlock(&currentTetrominoPtr->lock);
+        }
+    }
 }
 
 void moveLeft(){
+    pthread_mutex_lock(&currentTetrominoPtr->lock);
     if (currentTetrominoPtr->x1 > 0 && currentTetrominoPtr->x2 > 0 && currentTetrominoPtr->x3 > 0 && currentTetrominoPtr->x4 > 0) {
         int canMove = 1;
         for (int y = 0; y < sizeof(fieldValues)/sizeof(char); y++){
@@ -352,9 +351,11 @@ void moveLeft(){
             placeTetromino();
         }
     }
+        pthread_mutex_unlock(&currentTetrominoPtr->lock);
 }
 
 void moveRight(){
+    pthread_mutex_lock(&currentTetrominoPtr->lock);
     if (currentTetrominoPtr->x1 < 9 && currentTetrominoPtr->x2 < 9 && currentTetrominoPtr->x3 < 9 && currentTetrominoPtr->x4 < 9) {
         int canMove = 1;
         for (int y = 0; y < sizeof(fieldValues)/sizeof(char); y++){
@@ -375,9 +376,12 @@ void moveRight(){
             placeTetromino();
         }
     }
+    pthread_mutex_unlock(&currentTetrominoPtr->lock);
 }
 
 void moveDown(){
+    pthread_mutex_lock(&currentTetrominoPtr->lock);
+    printf("after lock\n");
     if (currentTetrominoPtr->y1 < 19 && currentTetrominoPtr->y2 < 19 && currentTetrominoPtr->y3 < 19 && currentTetrominoPtr->y4 < 19) {
         int canMove = 1;
         for (int y = 0; y < sizeof(fieldValues)/sizeof(char); y++){
@@ -400,6 +404,7 @@ void moveDown(){
             settle_tetromino();
         }
     }
+    pthread_mutex_unlock(&currentTetrominoPtr->lock);
 }
 
 void move_above_down(int row){
@@ -946,5 +951,7 @@ void gameLoop(){
     }
 }
 
-
+Tetromino* get_tetromino_ptr(){
+    return currentTetrominoPtr;
+}
 

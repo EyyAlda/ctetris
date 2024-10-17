@@ -2,17 +2,20 @@
 #define GAME_H
 
 #include <pthread.h>
-#include <stdlib.h>
 
-typedef struct{
-	int x1;
-	int x2;
-	int x3;
-	int x4;
-	int y1;
-	int y2;
-	int y3;
-	int y4;
+typedef struct{	
+    int y1;
+    int y2;
+    int y3;
+    int y4;
+    int x1;
+    int x2;
+    int x3;
+    int x4;
+    int rotation;
+    char fieldValue;
+    pthread_mutex_t lock;
+    int game_over;
 }Tetromino;
 
 void gameLoop();
@@ -23,5 +26,6 @@ void moveLeft();
 
 void moveRight();
 
+Tetromino* get_tetromino_ptr();
 
 #endif

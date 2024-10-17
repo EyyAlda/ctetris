@@ -7,6 +7,7 @@ set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+set(CMAKE_BUILD_TYPE Debug)
 
 # Find required packages
 find_package(PkgConfig REQUIRED)
