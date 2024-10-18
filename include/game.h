@@ -18,13 +18,15 @@ typedef struct{
     int game_over;
 }Tetromino;
 
-void gameLoop();
+void* gameLoop(void *arg);
 
 void moveDown();
 
 void moveLeft();
 
 void moveRight();
+
+void rotate_tetromino();
 
 Tetromino* get_tetromino_ptr();
 

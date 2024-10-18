@@ -32,7 +32,7 @@ void createCurrentTetromino(){
     currentTetrominoPtr = (Tetromino *)malloc(sizeof(Tetromino));
 
     if (currentTetrominoPtr == NULL) {
-        printf("Memory allocation failed!");
+        printf("Memory allocation failed!\n");
         exit(1);
     }
 }
@@ -188,7 +188,7 @@ void createTetromino(){
             pthread_mutex_unlock(&currentTetrominoPtr->lock);
             break;
         default:
-            printf("Err: failed to create Tetromino!");
+            printf("Err: failed to create Tetromino!\n");
             free(currentTetrominoPtr);
             exit(1);
             break;
@@ -202,8 +202,8 @@ void createTetromino(){
 
 void showPlayingField(){
     for(int y = 0; y < 20; y++){
-        printf("%d<!", y);
-        for(int x = 0; x < 9; x++){
+        printf("<!");
+        for(int x = 0; x < 10; x++){
             printf("%c",fieldValues[y][x]);
         }
         printf("!>\n");
@@ -331,6 +331,7 @@ skip_check:
 
 void moveLeft(){
     pthread_mutex_lock(&currentTetrominoPtr->lock);
+    printf("\033[0;31mmoving Left\033[0m\n");
     if (currentTetrominoPtr->x1 > 0 && currentTetrominoPtr->x2 > 0 && currentTetrominoPtr->x3 > 0 && currentTetrominoPtr->x4 > 0) {
         int canMove = 1;
         for (int y = 0; y < sizeof(fieldValues)/sizeof(char); y++){
@@ -352,10 +353,12 @@ void moveLeft(){
         }
     }
         pthread_mutex_unlock(&currentTetrominoPtr->lock);
+        showPlayingField();
 }
 
 void moveRight(){
-    pthread_mutex_lock(&currentTetrominoPtr->lock);
+    pthread_mutex_trylock(&currentTetrominoPtr->lock);
+    printf("\033[0;31mmoving right\033[0m\n");
     if (currentTetrominoPtr->x1 < 9 && currentTetrominoPtr->x2 < 9 && currentTetrominoPtr->x3 < 9 && currentTetrominoPtr->x4 < 9) {
         int canMove = 1;
         for (int y = 0; y < sizeof(fieldValues)/sizeof(char); y++){
@@ -377,10 +380,11 @@ void moveRight(){
         }
     }
     pthread_mutex_unlock(&currentTetrominoPtr->lock);
+    showPlayingField();
 }
 
 void moveDown(){
-    pthread_mutex_lock(&currentTetrominoPtr->lock);
+    pthread_mutex_trylock(&currentTetrominoPtr->lock);
     printf("after lock\n");
     if (currentTetrominoPtr->y1 < 19 && currentTetrominoPtr->y2 < 19 && currentTetrominoPtr->y3 < 19 && currentTetrominoPtr->y4 < 19) {
         int canMove = 1;
@@ -405,6 +409,7 @@ void moveDown(){
         }
     }
     pthread_mutex_unlock(&currentTetrominoPtr->lock);
+    showPlayingField();
 }
 
 void move_above_down(int row){
@@ -443,12 +448,13 @@ void check_for_full_row(){
 }
 
 void rotate_tetromino(){
-    printf("rotating Tetromino\n");
+    printf("\033[0;31mrotating Tetromino\033[0m\n\n");
     pthread_mutex_lock(&currentTetrominoPtr->lock);
     switch(currentTetrominoPtr->fieldValue){
         case 'L':
+            printf("\033[0;32mrotating Tetromino L\033[0m\n\n");
             switch(currentTetrominoPtr->rotation){
-                case '1':
+                case 1:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == '0'){
@@ -466,7 +472,7 @@ void rotate_tetromino(){
                     }
                     break;
 
-                case '2':
+                case 2:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == '0'){
@@ -484,7 +490,7 @@ void rotate_tetromino(){
                     }
                     break;
                     
-                case '3':
+                case 3:
                     if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == '0'){
@@ -502,7 +508,7 @@ void rotate_tetromino(){
                     }
                     break;
 
-                case '4':
+                case 4:
                     if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0'){
@@ -520,9 +526,11 @@ void rotate_tetromino(){
                     }
                     break;
             }
+            break;
         case 'J':
+            printf("\033[0;32mrotating Tetromino J\033[0m\n\n");
             switch(currentTetrominoPtr->rotation){
-                case '1':
+                case 1:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == '0'){
@@ -541,7 +549,7 @@ void rotate_tetromino(){
                     break;
 
 
-                case '2':
+                case 2:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == '0'){
@@ -560,7 +568,7 @@ void rotate_tetromino(){
                     break;
 
 
-                case '3':
+                case 3:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0'){
@@ -578,7 +586,7 @@ void rotate_tetromino(){
                     }
                     break;
 
-                case '4':
+                case 4:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == '0'){
@@ -596,9 +604,11 @@ void rotate_tetromino(){
                     }
                     break;
             }
+            break;
         case 'I':
+            printf("\033[0;32mrotating Tetromino I\033[0m\n\n");
             switch(currentTetrominoPtr->rotation){
-                case '1':
+                case 1:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4 - 2] == '0'){
@@ -618,7 +628,7 @@ void rotate_tetromino(){
                     break;
 
 
-                case '2':
+                case 2:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4 + 2] == '0'){
@@ -638,7 +648,7 @@ void rotate_tetromino(){
                     break;
 
 
-                case '3':
+                case 3:
                     if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4 + 2] == '0'){
@@ -658,7 +668,7 @@ void rotate_tetromino(){
                     break;
 
 
-                case '4':
+                case 4:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4 + 2] == '0'){
@@ -679,9 +689,11 @@ void rotate_tetromino(){
 
 
             }
+            break;
         case 'Z':
+            printf("\033[0;32mrotating Tetromino Z\033[0m\n\n");
             switch(currentTetrominoPtr->rotation){
-                case '1':
+                case 1:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == '0'){
@@ -700,7 +712,7 @@ void rotate_tetromino(){
                     break;
 
 
-                case '2':
+                case 2:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == '0'){
@@ -719,7 +731,7 @@ void rotate_tetromino(){
                     break;
 
 
-                case '3':
+                case 3:
                     if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0'){
@@ -738,7 +750,7 @@ void rotate_tetromino(){
                     break;
 
 
-                case '4':
+                case 4:
                     if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == '0'){
@@ -758,9 +770,11 @@ void rotate_tetromino(){
 
 
             }
+            break;
         case 'S':
+            printf("\033[0;32mrotating Tetromino S\033[0m\n\n");
             switch(currentTetrominoPtr->rotation){
-                case '1':
+                case 1:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == '0'){
@@ -778,7 +792,7 @@ void rotate_tetromino(){
                     }
                     break;
 
-                case '2':
+                case 2:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == '0'){
@@ -797,7 +811,7 @@ void rotate_tetromino(){
                     break;
 
 
-                case '3':
+                case 3:
                     if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == '0'){
@@ -816,7 +830,7 @@ void rotate_tetromino(){
                     break;
 
 
-                case '4':
+                case 4:
                     if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0'){
@@ -834,10 +848,12 @@ void rotate_tetromino(){
                     }
                     break;
             }
+            break;
 
         case 'T':
+            printf("\033[0;32mrotating Tetromino T\033[0m\n\n");
             switch(currentTetrominoPtr->rotation){
-                case '1':
+                case 1:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 - 1][currentTetrominoPtr->x4 + 1] == '0'){
@@ -855,7 +871,7 @@ void rotate_tetromino(){
                         }
                     }
                     break;
-                case '2':
+                case 2:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 + 1][currentTetrominoPtr->x4 + 1] == '0'){
@@ -873,7 +889,7 @@ void rotate_tetromino(){
                         }
                     }
                     break;
-                case '3':
+                case 3:
                     if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0'){
@@ -891,7 +907,7 @@ void rotate_tetromino(){
                         }
                     }
                     break;
-                case '4':
+                case 4:
                     if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0'){
                         if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0'){
                             if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0'){
@@ -910,10 +926,12 @@ void rotate_tetromino(){
                     }
                     break;
             }
+            break;
         default:
             break;
     }
     pthread_mutex_unlock(&currentTetrominoPtr->lock);
+    showPlayingField();
 }
 
 
@@ -930,7 +948,7 @@ void prepare(){
     }
 }
 
-void gameLoop(){
+void* gameLoop(void *arg){
     printf("entering the main loop\n");
     prepare();
     while (!gameFinished) {
@@ -949,6 +967,7 @@ void gameLoop(){
         free(currentTetrominoPtr);
         currentTetrominoPtr = NULL;
     }
+    return NULL;
 }
 
 Tetromino* get_tetromino_ptr(){

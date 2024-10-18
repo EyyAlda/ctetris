@@ -17,6 +17,7 @@ pkg_check_modules(GLIB REQUIRED IMPORTED_TARGET glib-2.0)
 add_executable(${PROJECT_NAME} 
     src/game.c
     src/main.c
+    src/ui.c
 )
 
 # Link libraries
