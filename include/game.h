@@ -14,11 +14,11 @@ typedef struct{
     int x4;
     int rotation;
     char fieldValue;
-    pthread_mutex_t lock;
+    //pthread_mutex_t lock;
     int game_over;
 }Tetromino;
 
-void* gameLoop(void *arg);
+//void* gameLoop(void *arg);
 
 void moveDown();
 
@@ -28,6 +28,16 @@ void moveRight();
 
 void rotate_tetromino();
 
-Tetromino* get_tetromino_ptr();
+void createTetromino();
+
+//Tetromino* get_tetromino_ptr();
+
+void prepare();
+
+void showPlayingField();
+
+extern char fieldValues[20][10];
+
+//char** get_playing_field();
 
 #endif
