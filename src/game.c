@@ -196,42 +196,46 @@ void showPlayingField(){
     }
 }
 
-void move_above_down(int row){
+void move_above_down(int row) {
     printf("\033[0;36mmoving upper placed tetrominos down\033[0m\n");
-    for (int x = 0; x < 9; x++){
+
+    // Clear the current row
+    for (int x = 0; x < 10; x++) {
         fieldValues[row][x] = '0';
     }
-    for (int y = row - 1; y > 0; y--){
-        for (int x = 0; x < 9; x++){
-            if (fieldValues[y][x] != '0' && fieldValues[y][x] != 'L' && fieldValues[y][x] != 'J' && fieldValues[y][x] != 'T' && fieldValues[y][x] != 'S' && fieldValues[y][x] != 'Z' && fieldValues[y][x] != 'O' && fieldValues[y][x] != 'I'){
-                fieldValues[y + 1][x] = fieldValues[y][x];
-                fieldValues[y][x] = '0';
-            }
+
+    // Move all rows above down by one
+    for (int y = row - 1; y >= 0; y--) {
+        for (int x = 0; x < 10; x++) {
+            fieldValues[y + 1][x] = fieldValues[y][x];  // Move row above down
+            fieldValues[y][x] = '0';  // Clear the moved row
         }
     }
 }
 
-
-void check_for_full_row(){
+void check_for_full_row() {
     printf("checking if a row is filled\n");
-    int row_is_full = 0;
-    for (int y = 19; y > 0; y--){
+
+    // Loop through rows from bottom to top
+    for (int y = 19; y >= 0; y--) {
         int spaces_taken = 0;
-        for (int x = 9; x > 0; x--){
-            if (fieldValues[y][x] != '0' && fieldValues[y][x] != 'L' && fieldValues[y][x] != 'J' && fieldValues[y][x] != 'I' && fieldValues[y][x] != 'O' && fieldValues[y][x] != 'S' && fieldValues[y][x] != 'Z' && fieldValues[y][x] != 'T'){
-                printf("\033[0;33mspace taken:%d\033[0m\n", y);
+
+        // Check if the row is full
+        for (int x = 0; x < 10; x++) {
+            if (fieldValues[y][x] != '0') {
                 spaces_taken++;
             }
         }
-        if (spaces_taken >= 9) {
-            printf("\033[0;35mfull row\033[0m\n");
-            y = row_is_full;
+
+        // If the row is full, clear it and move rows down
+        if (spaces_taken == 10) {  // A row is full if all 10 spaces are taken
+            printf("\033[0;35mfull row at %d\033[0m\n", y);
             move_above_down(y);
+            y++;  // Recheck this row after moving above rows down
         }
-            row_is_full = 0;
     }
-    showPlayingField();
 }
+
 
 void tetrominoSettled(){
     printf("setteling tetromino\n");
@@ -316,29 +320,30 @@ void clearTetromino(){
 
 }
 void settle_tetromino(){
-    printf("checking if a tetromino should settle\n");
-    if (currentTetrominoPtr->y1 == 19 || currentTetrominoPtr->y2 == 19 || currentTetrominoPtr->y3 == 19 || currentTetrominoPtr->y4 == 19){
-        printf("reached the lowest point\n");
-        tetrominoSettled();
-        goto skip_check;
-    }
-    int break_loop = 0;
-    for (int y = 19; y > 0; y--){
-        for (int x = 0; x < 10; x++){
-            if (fieldValues[y][x] == currentTetrominoPtr->fieldValue){
-                if (fieldValues[y + 1][x] != '0' && fieldValues[y + 1][x] != currentTetrominoPtr->fieldValue){
-                    printf("found tetromino below\n");
-                    tetrominoSettled();
-                    break_loop = 1;
-                    break;
+    if (currentTetrominoPtr != NULL) {
+        printf("checking if a tetromino should settle\n");
+        if (currentTetrominoPtr->y1 >= 19 || currentTetrominoPtr->y2 >= 19 || currentTetrominoPtr->y3 >= 19 || currentTetrominoPtr->y4 >= 19){
+            printf("reached the lowest point\n");
+            tetrominoSettled();
+            goto skip_check;
+        }
+        int break_loop = 0;
+        for (int y = 19; y > 0; y--){
+            for (int x = 0; x < 10; x++){
+                if (fieldValues[y][x] == currentTetrominoPtr->fieldValue){
+                    if (fieldValues[y + 1][x] != '0' && fieldValues[y + 1][x] != currentTetrominoPtr->fieldValue){
+                        printf("found tetromino below\n");
+                        tetrominoSettled();
+                        break_loop = 1;
+                        break;
+                    }
                 }
             }
+            if (break_loop) break;
         }
-        if (break_loop) break;
-    }
 skip_check:
-    printf("after skip_check\n");
-    
+        printf("after skip_check\n");
+    }
 }
 
 void moveLeft(){
@@ -346,9 +351,9 @@ void moveLeft(){
         printf("\033[0;31mmoving Left\033[0m\n");
         if (currentTetrominoPtr->x1 > 0 && currentTetrominoPtr->x2 > 0 && currentTetrominoPtr->x3 > 0 && currentTetrominoPtr->x4 > 0) {
             int canMove = 1;
-            for (int y = 0; y < sizeof(fieldValues)/sizeof(char); y++){
-                for (int x = 0; x < (int)sizeof(fieldValues[y])/(int)sizeof(char); x++) {
-                    if (fieldValues[y][x] == currentTetrominoPtr->fieldValue) {
+            for (int y = 19; y >= 0; y--) {  // Start from the bottom for safe shifting
+                for (int x = 0; x < 10; x++) {  // Field has 10 columns
+                   if (fieldValues[y][x] == currentTetrominoPtr->fieldValue) {
                         if (fieldValues[y][x - 1] != '0' && fieldValues[y][x - 1] != currentTetrominoPtr->fieldValue) {
                             canMove = 0;
                         }
@@ -364,7 +369,6 @@ void moveLeft(){
                 placeTetromino();
             }
         }
-        showPlayingField();
     }
 }
 
@@ -373,8 +377,8 @@ void moveRight(){
         printf("\033[0;31mmoving right\033[0m\n");
         if (currentTetrominoPtr->x1 < 9 && currentTetrominoPtr->x2 < 9 && currentTetrominoPtr->x3 < 9 && currentTetrominoPtr->x4 < 9) {
             int canMove = 1;
-            for (int y = 0; y < sizeof(fieldValues)/sizeof(char); y++){
-                for (int x = 0; x < (int)sizeof(fieldValues[y])/(int)sizeof(char); x++) {
+            for (int y = 19; y >= 0; y--) {  // Start from the bottom for safe shifting
+                for (int x = 0; x < 10; x++) {  // Field has 10 columns
                     if (fieldValues[y][x] == currentTetrominoPtr->fieldValue) {
                         if (fieldValues[y][x + 1] != '0' && fieldValues[y][x + 1] != currentTetrominoPtr->fieldValue) {
                             canMove = 0;
@@ -391,39 +395,51 @@ void moveRight(){
                 placeTetromino();
             }
         }
-        showPlayingField();
     }
 }
 
-void moveDown(){
-    if (currentTetrominoPtr != NULL){
+
+void moveDown() {
+    if (currentTetrominoPtr != NULL) {
         printf("after lock\n");
+
+        // Check if any part of the tetromino can move down (i.e., not at the bottom row)
         if (currentTetrominoPtr->y1 < 19 && currentTetrominoPtr->y2 < 19 && currentTetrominoPtr->y3 < 19 && currentTetrominoPtr->y4 < 19) {
             int canMove = 1;
-            for (int y = 0; y < sizeof(fieldValues)/sizeof(char); y++){
-                for (int x = 0; x < (int)sizeof(fieldValues[y])/(int)sizeof(char); x++) {
+
+            // Loop over the entire field to check if the tetromino can move down
+            for (int y = 19; y >= 0; y--) {  // Start from the bottom for safe shifting
+                for (int x = 0; x < 10; x++) {  // Field has 10 columns
+
+                    // Check if this cell belongs to the current tetromino
                     if (fieldValues[y][x] == currentTetrominoPtr->fieldValue) {
-                        if (fieldValues[y + 1][x] != '0' && fieldValues[y + 1][x] != currentTetrominoPtr->fieldValue && y + 1 > 18) {
+                        
+                        // Check if the cell below is free or occupied by a different piece
+                        if (y + 1 < 20 && fieldValues[y + 1][x] != '0' && fieldValues[y + 1][x] != currentTetrominoPtr->fieldValue) {
                             printf("cannot move\n");
                             canMove = 0;
                         }
                     }
                 }
             }
-            if (canMove){
-                clearTetromino();
+
+            // If tetromino can move, move it down
+            if (canMove) {
+                clearTetromino();  // Clear current position of the tetromino
                 currentTetrominoPtr->y1++;
                 currentTetrominoPtr->y2++;
                 currentTetrominoPtr->y3++;
                 currentTetrominoPtr->y4++;
-                placeTetromino();
-            } else {
-                settle_tetromino();
+                placeTetromino();  // Place tetromino in the new position
             }
+
+        } else {
+            // Reached the bottom or other boundary, handle locking tetromino here if needed
+            printf("Tetromino can't move down further.\n");
         }
-        showPlayingField();
+
     } else {
-        createTetromino();
+        createTetromino();  // No current tetromino, create a new one
     }
 }
 
@@ -691,7 +707,7 @@ void rotate_tetromino(){
                                 currentTetrominoPtr->y1 += 1;
                                 currentTetrominoPtr->x3 += 1;
                                 currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->x4 -= 2;
+                                currentTetrominoPtr->x4 += 2;
 
                                 currentTetrominoPtr->rotation = 2;
                                 placeTetromino();
@@ -708,7 +724,7 @@ void rotate_tetromino(){
                                 currentTetrominoPtr->y1 += 1;
                                 currentTetrominoPtr->x3 += 1;
                                 currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->x4 += 2;
+                                currentTetrominoPtr->y4 += 2;
 
                                 currentTetrominoPtr->rotation = 3;
                                 placeTetromino();
@@ -725,7 +741,7 @@ void rotate_tetromino(){
                                 currentTetrominoPtr->y1 -= 1;
                                 currentTetrominoPtr->x3 -= 1;
                                 currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->y4 += 2;
+                                currentTetrominoPtr->x4 -= 2;
 
                                 currentTetrominoPtr->rotation = 4;
                                 placeTetromino();
@@ -742,7 +758,7 @@ void rotate_tetromino(){
                                 currentTetrominoPtr->y1 -= 1;
                                 currentTetrominoPtr->x3 -= 1;
                                 currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->x4 -= 2;
+                                currentTetrominoPtr->y4 -= 2;
 
                                 currentTetrominoPtr->rotation = 1;
                                 placeTetromino();
@@ -912,7 +928,10 @@ void rotate_tetromino(){
     showPlayingField();
 }
 
-
+void free_pointer(){
+    free(currentTetrominoPtr);
+    currentTetrominoPtr = NULL;
+}
 
 
 

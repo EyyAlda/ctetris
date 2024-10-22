@@ -38,6 +38,10 @@ void showPlayingField();
 
 extern char fieldValues[20][10];
 
+void free_pointer();
+
+void settle_tetromino();
+
 //char** get_playing_field();
 
 #endif
