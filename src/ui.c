@@ -9,125 +9,71 @@
 //GtkWidget *grid;
 int prepared = 0;
 //GtkWidget *boxes[200];
-
+GtkWidget *area;
 //GtkWidget *fps_label;
+#define GRID_WIDTH 10
+#define GRID_HEIGHT 20
 
 
-/*static GtkWidget* create_colored_box(const char *color_name, int create_new) {
-    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    GtkCssProvider *provider = gtk_css_provider_new();
-    gchar *css = g_strdup_printf("box {background-color: %s; border: 1px solid gray;}", color_name);
-    gtk_css_provider_load_from_data(provider, css, -1);
-    g_free(css);
-
-    GtkStyleContext *context = gtk_widget_get_style_context(box);
-    gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
-    g_object_unref(provider);
-
-    gtk_widget_set_hexpand(box, TRUE);
-    gtk_widget_set_vexpand(box, TRUE);
-
-    return box;
-}
-
-void edit_colored_box(const char *color_name, GtkWidget *box) {
-    GtkCssProvider *provider = gtk_css_provider_new();
-    
-    // Generate a unique CSS class name using the memory address of the box widget
-    gchar *unique_class = g_strdup_printf("colored-box-%p", box);
-    
-    // Create the CSS rule with the unique class and specified color
-    gchar *css = g_strdup_printf(".%s { background-color: %s; border: 1px solid gray; }", unique_class, color_name);
-    gtk_css_provider_load_from_data(provider, css, -1);
-    g_free(css);
-
-    // Get the style context of the GtkBox
-    GtkStyleContext *context = gtk_widget_get_style_context(box);
-
-    // Add the CSS provider to the widget's style context
-    gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
-
-    // Add the unique class to the box, so it uses the new CSS rule
-    gtk_widget_add_css_class(box, unique_class);
-
-    // Unreference the CSS provider as it's no longer needed
-    g_object_unref(provider);
-    
-    // Free the unique class string
-    g_free(unique_class);
-}
-
-void draw_tetrominos(){
-
-}
-*/
-
-/*void free_playing_field(char** field){
-    for (int i = 0; i < 20; i++){
-        free(field[i]);
-    }
-    free(field);
-}*/
-/*
-void edit_values(int y, int x, GtkWidget *box){
+static void draw_block_with_border(cairo_t *cr, int x, int y, int block_size) {
+    // Fill the block depending on whether it's taken or not
     switch(fieldValues[y][x]){
         case '0':
-            edit_colored_box("black", box);
+            cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);  // Black color for empty block
             break;
         case 'L':
         case '1':
-            edit_colored_box("orange", box);
+            cairo_set_source_rgb(cr, 1.0, 0.65, 0.0);  // Orange
             break;
         case 'J':
         case '2':
-            edit_colored_box("blue", box);
+            cairo_set_source_rgb(cr, 0.0, 0.0, 1.0);  // Blue
             break;
         case 'O':
         case '3':
-            edit_colored_box("yellow", box);
+            cairo_set_source_rgb(cr, 1.0, 1.0, 0.0);  // Yellow
             break;
         case 'I':
         case '4':
-            edit_colored_box("rgb(0, 153, 255)", box);
+            cairo_set_source_rgb(cr, 0.0, 1.0, 1.0);  // Light-Blue
             break;
         case 'S':
         case '5':
-            edit_colored_box("green", box);
+            cairo_set_source_rgb(cr, 0.0, 1.0, 0.0);  // Green
             break;
         case 'Z':
         case '6':
-            edit_colored_box("red", box);
+            cairo_set_source_rgb(cr, 1.0, 0.0, 0.0);  // Red
             break;
         case 'T':
         case '7':
-            edit_colored_box("purple", box);
+            cairo_set_source_rgb(cr, 0.5, 0.0, 0.5);  // Purple
             break;
         default:
-            edit_colored_box("black", box);
+            cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);  // Black color for empty block
             break;
-    }
+
+    } 
     
+    cairo_rectangle(cr, x * block_size, y * block_size, block_size, block_size);
+    cairo_fill(cr);  // Fill the block
+
+    // Draw the border
+    cairo_set_source_rgb(cr, 0.4, 0.4, 0.4);  // White color for the border
+    cairo_set_line_width(cr, 2);              // Set border width (2 pixels)
+    cairo_rectangle(cr, x * block_size, y * block_size, block_size, block_size);
+    cairo_stroke(cr);  // Draw the border
 }
-*/
-/*void init_Boxes(){
-        for (int i = 0; i < 200; i++){
-            boxes[i] = create_colored_box("black", 1);
-        }
-        int i = 0;
-        for (int y = 0; y < 20; y++){
-            for (int x = 0; x < 10; x++){
-                gtk_grid_attach(GTK_GRID(grid), boxes[i], x, y, 1, 1);
-                i++;
-            }
-        }
-}
-*/
-void show(){
-    int i = 0;
+
+static void show(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
+    int block_size_x = width / GRID_WIDTH;  // Calculate block size based on the new width
+    int block_size_y = height / GRID_HEIGHT;  // Calculate block size based on the new height
+
+    // Use the minimum block size to maintain square blocks
+    int block_size = MIN(block_size_x, block_size_y);
     for (int y = 0; y < 20; y++){
         for (int x = 0; x < 10; x++){
-            edit_values(y, x, boxes[i]);
-            i++;
+           draw_block_with_border(cr, x, y, block_size); 
         }        
     }
 }
@@ -159,13 +105,11 @@ gboolean in_game_key_press(GtkEventController *controller, guint keyval, guint k
             printf("nothing\n");
             break;
     }
-    show();
     return TRUE;
 }
 gboolean update_grid(gpointer user_data){
     if (!prepared) {
         prepare();
-        init_Boxes();
         prepared = 1;
     }
     //showPlayingField();
@@ -180,8 +124,7 @@ gboolean on_tick_callback(GtkWidget *widget, GdkFrameClock *frame_clock, gpointe
     //gint64 frame_time = gdk_frame_clock_get_frame_time(frame_clock);
     //char fps[] = {"FPS: " + ((char[] )frame_time)};
     //gtk_label_set_text(GTK_LABEL(fps_label), fps);
-    show();
-
+    gtk_widget_queue_draw(GTK_WIDGET(area));
     return TRUE;
 }
 
@@ -193,34 +136,28 @@ gboolean on_window_destroy(GtkWidget *widget, gpointer app){
 }
 
 void on_activate(GtkApplication *app, gpointer user_data){
-                GtkWidget *window = gtk_application_window_new(app);
-                
-                fps_label = gtk_label_new("FPS:");
-                gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
-                //set minimum size
-                gtk_widget_set_size_request(GTK_WIDGET(window), 400, 200);
-                gtk_window_set_title(GTK_WINDOW(window), "Tetris");
+    GtkWidget *window = gtk_application_window_new(app);
 
-                GtkEventController *key_controller = gtk_event_controller_key_new();
-                g_signal_connect(key_controller, "key-pressed", G_CALLBACK(in_game_key_press), NULL);
-                gtk_widget_add_controller(GTK_WIDGET(window), key_controller);
+    area = gtk_drawing_area_new();
+    gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(area), show, NULL, NULL);
+    gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
+    //set minimum size
+    gtk_widget_set_size_request(GTK_WIDGET(window), 400, 200);
+    gtk_window_set_title(GTK_WINDOW(window), "Tetris");
 
-                g_timeout_add(1000, update_grid, NULL);
+    GtkEventController *key_controller = gtk_event_controller_key_new();
+    g_signal_connect(key_controller, "key-pressed", G_CALLBACK(in_game_key_press), NULL);
+    gtk_widget_add_controller(GTK_WIDGET(window), key_controller);
 
-                gtk_widget_add_tick_callback(window, on_tick_callback, NULL, NULL);
-                
-                grid = gtk_grid_new();
-                gtk_widget_set_vexpand(grid, TRUE);
-                gtk_widget_set_hexpand(grid, TRUE);
-                
-                GtkWidget *aspect_ratio = gtk_aspect_frame_new(0.5, 0.5, 0.5, FALSE);
-                gtk_aspect_frame_set_child(GTK_ASPECT_FRAME(aspect_ratio), grid);
-                
-                gtk_window_set_child(GTK_WINDOW(window), aspect_ratio);
+    g_timeout_add(1000, update_grid, NULL);
 
-                gtk_window_present(GTK_WINDOW(window));
-                // Connect the "destroy" signal of the window to the callback
-                g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroy), app);
+    gtk_widget_add_tick_callback(window, on_tick_callback, NULL, NULL);
+
+    gtk_window_set_child(GTK_WINDOW(window), area);
+
+    gtk_window_present(GTK_WINDOW(window));
+    // Connect the "destroy" signal of the window to the callback
+    g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroy), app);
 }
 
 int create_gui(int argc, char *argv[], int download_new){

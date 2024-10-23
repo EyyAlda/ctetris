@@ -926,7 +926,6 @@ void rotate_tetromino(){
         default:
             break;
     }
-    showPlayingField();
 }
 
 void free_pointer(){
