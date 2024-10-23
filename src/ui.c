@@ -6,14 +6,14 @@
 #include "../include/game.h"
 #include "../include/ui.h"
 
-GtkWidget *grid;
+//GtkWidget *grid;
 int prepared = 0;
-GtkWidget *boxes[200];
+//GtkWidget *boxes[200];
 
-GtkWidget *fps_label;
+//GtkWidget *fps_label;
 
 
-static GtkWidget* create_colored_box(const char *color_name, int create_new) {
+/*static GtkWidget* create_colored_box(const char *color_name, int create_new) {
     GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     GtkCssProvider *provider = gtk_css_provider_new();
     gchar *css = g_strdup_printf("box {background-color: %s; border: 1px solid gray;}", color_name);
@@ -57,7 +57,10 @@ void edit_colored_box(const char *color_name, GtkWidget *box) {
     g_free(unique_class);
 }
 
+void draw_tetrominos(){
 
+}
+*/
 
 /*void free_playing_field(char** field){
     for (int i = 0; i < 20; i++){
@@ -65,7 +68,7 @@ void edit_colored_box(const char *color_name, GtkWidget *box) {
     }
     free(field);
 }*/
-
+/*
 void edit_values(int y, int x, GtkWidget *box){
     switch(fieldValues[y][x]){
         case '0':
@@ -105,8 +108,8 @@ void edit_values(int y, int x, GtkWidget *box){
     }
     
 }
-
-void init_Boxes(){
+*/
+/*void init_Boxes(){
         for (int i = 0; i < 200; i++){
             boxes[i] = create_colored_box("black", 1);
         }
@@ -118,6 +121,7 @@ void init_Boxes(){
             }
         }
 }
+*/
 void show(){
     int i = 0;
     for (int y = 0; y < 20; y++){

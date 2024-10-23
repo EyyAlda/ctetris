@@ -28,7 +28,7 @@ Tetromino *currentTetrominoPtr = NULL;
 
 //creates a copy of the Tetromino struct to store current Tetromino values
 void createCurrentTetromino(){
-    printf("creating Tetromino\n");
+    //printf("creating Tetromino\n");
     currentTetrominoPtr = (Tetromino *)malloc(sizeof(Tetromino));
 
     if (currentTetrominoPtr == NULL) {
@@ -52,7 +52,7 @@ void key_handling(){
 
 //checks if an about to be placed tetromino can be placed. If the space is taken it returns 0
 int checkForSpace(){
-    printf("checking if space is available\n");
+    //printf("checking if space is available\n");
     if (fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] == '0') {
         if (fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] == '0') {
             if (fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] == '0') {
@@ -76,10 +76,11 @@ void createTetromino(){
     int min = 0;
     int max = 6;
     int randomTetromino = min + rand() % (max - min + 1);
+    
 
     createCurrentTetromino();
     
-    printf("setting default values\n");
+    //printf("setting default values\n");
     //set the default values, including starting position, for each possible tetromino
     switch(possibleTetrominos[randomTetromino]){
         case 'J':
@@ -197,7 +198,7 @@ void showPlayingField(){
 }
 
 void move_above_down(int row) {
-    printf("\033[0;36mmoving upper placed tetrominos down\033[0m\n");
+    //printf("\033[0;36mmoving upper placed tetrominos down\033[0m\n");
 
     // Clear the current row
     for (int x = 0; x < 10; x++) {
@@ -214,7 +215,7 @@ void move_above_down(int row) {
 }
 
 void check_for_full_row() {
-    printf("checking if a row is filled\n");
+    //printf("checking if a row is filled\n");
 
     // Loop through rows from bottom to top
     for (int y = 19; y >= 0; y--) {
@@ -238,7 +239,7 @@ void check_for_full_row() {
 
 
 void tetrominoSettled(){
-    printf("setteling tetromino\n");
+    //printf("setteling tetromino\n");
     switch(currentTetrominoPtr->fieldValue) {
         case 'L':
             fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '1';
@@ -289,7 +290,7 @@ void tetrominoSettled(){
             fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = '1';
             break;
     }
-    printf("checking if reached the top row\n");
+    //printf("checking if reached the top row\n");
     if (currentTetrominoPtr->y4 == 0 || currentTetrominoPtr->y3 == 0 || currentTetrominoPtr->y2 == 0 || currentTetrominoPtr->y1 == 0){
         printf("game finished\n");
         gameFinished = 1;
@@ -304,7 +305,7 @@ void tetrominoSettled(){
 
 
 void placeTetromino(){ 
-    printf("placing the tetromino\n");
+    //printf("placing the tetromino\n");
     fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = currentTetrominoPtr->fieldValue;
     fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = currentTetrominoPtr->fieldValue;
     fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = currentTetrominoPtr->fieldValue;
@@ -312,7 +313,7 @@ void placeTetromino(){
 }
 
 void clearTetromino(){
-    printf("clearing tetromino\n");
+    //printf("clearing tetromino\n");
     fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '0';
     fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = '0';
     fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = '0';
@@ -321,34 +322,34 @@ void clearTetromino(){
 }
 void settle_tetromino(){
     if (currentTetrominoPtr != NULL) {
-        printf("checking if a tetromino should settle\n");
+        //printf("checking if a tetromino should settle\n");
         if (currentTetrominoPtr->y1 >= 19 || currentTetrominoPtr->y2 >= 19 || currentTetrominoPtr->y3 >= 19 || currentTetrominoPtr->y4 >= 19){
-            printf("reached the lowest point\n");
+            //printf("reached the lowest point\n");
             tetrominoSettled();
-            goto skip_check;
-        }
-        int break_loop = 0;
-        for (int y = 19; y > 0; y--){
-            for (int x = 0; x < 10; x++){
-                if (fieldValues[y][x] == currentTetrominoPtr->fieldValue){
-                    if (fieldValues[y + 1][x] != '0' && fieldValues[y + 1][x] != currentTetrominoPtr->fieldValue){
-                        printf("found tetromino below\n");
-                        tetrominoSettled();
-                        break_loop = 1;
-                        break;
+        } else {
+            int break_loop = 0;
+            for (int y = 19; y > 0; y--){
+                for (int x = 0; x < 10; x++){
+                    if (fieldValues[y][x] == currentTetrominoPtr->fieldValue){
+                        if (fieldValues[y + 1][x] != '0' && fieldValues[y + 1][x] != currentTetrominoPtr->fieldValue){
+                            //printf("found tetromino below\n");
+                            tetrominoSettled();
+                            break_loop = 1;
+                            break;
+                        }
                     }
                 }
+                if (break_loop) break;
             }
-            if (break_loop) break;
+
         }
-skip_check:
-        printf("after skip_check\n");
+        //printf("after skip_check\n");
     }
 }
 
 void moveLeft(){
     if (currentTetrominoPtr != NULL){
-        printf("\033[0;31mmoving Left\033[0m\n");
+        //printf("\033[0;31mmoving Left\033[0m\n");
         if (currentTetrominoPtr->x1 > 0 && currentTetrominoPtr->x2 > 0 && currentTetrominoPtr->x3 > 0 && currentTetrominoPtr->x4 > 0) {
             int canMove = 1;
             for (int y = 19; y >= 0; y--) {  // Start from the bottom for safe shifting
@@ -374,7 +375,7 @@ void moveLeft(){
 
 void moveRight(){
     if (currentTetrominoPtr != NULL){
-        printf("\033[0;31mmoving right\033[0m\n");
+        //printf("\033[0;31mmoving right\033[0m\n");
         if (currentTetrominoPtr->x1 < 9 && currentTetrominoPtr->x2 < 9 && currentTetrominoPtr->x3 < 9 && currentTetrominoPtr->x4 < 9) {
             int canMove = 1;
             for (int y = 19; y >= 0; y--) {  // Start from the bottom for safe shifting
@@ -401,7 +402,7 @@ void moveRight(){
 
 void moveDown() {
     if (currentTetrominoPtr != NULL) {
-        printf("after lock\n");
+        //printf("after lock\n");
 
         // Check if any part of the tetromino can move down (i.e., not at the bottom row)
         if (currentTetrominoPtr->y1 < 19 && currentTetrominoPtr->y2 < 19 && currentTetrominoPtr->y3 < 19 && currentTetrominoPtr->y4 < 19) {
@@ -453,10 +454,10 @@ int is_in_boundries(int y, int x){
 
 
 void rotate_tetromino(){
-    printf("\033[0;31mrotating Tetromino\033[0m\n\n");
+    //printf("\033[0;31mrotating Tetromino\033[0m\n\n");
     switch(currentTetrominoPtr->fieldValue){
         case 'L':
-            printf("\033[0;32mrotating Tetromino L\033[0m\n\n");
+            //printf("\033[0;32mrotating Tetromino L\033[0m\n\n");
             switch(currentTetrominoPtr->rotation){
                 case 1:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
@@ -532,7 +533,7 @@ void rotate_tetromino(){
             }
             break;
         case 'J':
-            printf("\033[0;32mrotating Tetromino J\033[0m\n\n");
+            //printf("\033[0;32mrotating Tetromino J\033[0m\n\n");
             switch(currentTetrominoPtr->rotation){
                 case 1:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
@@ -610,7 +611,7 @@ void rotate_tetromino(){
             }
             break;
         case 'I':
-            printf("\033[0;32mrotating Tetromino I\033[0m\n\n");
+            //printf("\033[0;32mrotating Tetromino I\033[0m\n\n");
             switch(currentTetrominoPtr->rotation){
                 case 1:
                     if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
@@ -695,8 +696,8 @@ void rotate_tetromino(){
             }
             break;
         case 'Z':
-            printf("\033[0;32mrotating Tetromino Z\033[0m\n");
-            printf("\033[0;32m%d\033[0m\n", currentTetrominoPtr->rotation);
+            //printf("\033[0;32mrotating Tetromino Z\033[0m\n");
+            //printf("\033[0;32m%d\033[0m\n", currentTetrominoPtr->rotation);
             switch(currentTetrominoPtr->rotation){
                 case 1:
                     if ((fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' || fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
@@ -707,7 +708,7 @@ void rotate_tetromino(){
                                 currentTetrominoPtr->y1 += 1;
                                 currentTetrominoPtr->x3 += 1;
                                 currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->x4 += 2;
+                                currentTetrominoPtr->y4 -= 2;
 
                                 currentTetrominoPtr->rotation = 2;
                                 placeTetromino();
@@ -724,7 +725,7 @@ void rotate_tetromino(){
                                 currentTetrominoPtr->y1 += 1;
                                 currentTetrominoPtr->x3 += 1;
                                 currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->y4 += 2;
+                                currentTetrominoPtr->x4 += 2;
 
                                 currentTetrominoPtr->rotation = 3;
                                 placeTetromino();
@@ -741,7 +742,7 @@ void rotate_tetromino(){
                                 currentTetrominoPtr->y1 -= 1;
                                 currentTetrominoPtr->x3 -= 1;
                                 currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->x4 -= 2;
+                                currentTetrominoPtr->y4 += 2;
 
                                 currentTetrominoPtr->rotation = 4;
                                 placeTetromino();
@@ -758,7 +759,7 @@ void rotate_tetromino(){
                                 currentTetrominoPtr->y1 -= 1;
                                 currentTetrominoPtr->x3 -= 1;
                                 currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->y4 -= 2;
+                                currentTetrominoPtr->x4 -= 2;
 
                                 currentTetrominoPtr->rotation = 1;
                                 placeTetromino();
@@ -769,8 +770,8 @@ void rotate_tetromino(){
             }
             break;
         case 'S':
-            printf("\033[0;32mrotating Tetromino S\033[0m\n\n");
-            printf("\033[0;32m%d\033[0m\n", currentTetrominoPtr->rotation);
+            //printf("\033[0;32mrotating Tetromino S\033[0m\n\n");
+            //printf("\033[0;32m%d\033[0m\n", currentTetrominoPtr->rotation);
             switch(currentTetrominoPtr->rotation){
                 case 1:
                     if ((fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' || fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
@@ -845,8 +846,8 @@ void rotate_tetromino(){
             break;
 
         case 'T':
-            printf("\033[0;32mrotating Tetromino T\033[0m\n\n");
-            printf("\033[0;32m%d\033[0m\n", currentTetrominoPtr->rotation);
+            //printf("\033[0;32mrotating Tetromino T\033[0m\n\n");
+            //printf("\033[0;32m%d\033[0m\n", currentTetrominoPtr->rotation);
             switch(currentTetrominoPtr->rotation){
                 case 1:
                     if ((fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' || fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
@@ -937,7 +938,7 @@ void free_pointer(){
 
 
 void prepare(){
-    printf("preparing playing field\n");
+    //printf("preparing playing field\n");
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 10; j++) {
             fieldValues[i][j] = '0';
