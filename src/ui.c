@@ -10,6 +10,7 @@
 int prepared = 0;
 //GtkWidget *boxes[200];
 GtkWidget *area;
+int is_paused = 0;
 //GtkWidget *fps_label;
 #define GRID_WIDTH 10
 #define GRID_HEIGHT 20
@@ -54,7 +55,7 @@ static void draw_block_with_border(cairo_t *cr, int x, int y, int block_size) {
             break;
 
     } 
-    
+
     cairo_rectangle(cr, x * block_size, y * block_size, block_size, block_size);
     cairo_fill(cr);  // Fill the block
 
@@ -73,7 +74,7 @@ static void show(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpoin
     int block_size = MIN(block_size_x, block_size_y);
     for (int y = 0; y < 20; y++){
         for (int x = 0; x < 10; x++){
-           draw_block_with_border(cr, x, y, block_size); 
+            draw_block_with_border(cr, x, y, block_size); 
         }        
     }
 }
@@ -83,23 +84,41 @@ gboolean in_game_key_press(GtkEventController *controller, guint keyval, guint k
     switch (keyval){
         case GDK_KEY_w:
         case GDK_KEY_W:
-            printf("rotating\n");
-            rotate_tetromino();
+            if (!is_paused){
+                printf("rotating\n");
+                rotate_tetromino();
+            }
             break;
         case GDK_KEY_a:
         case GDK_KEY_A:
-            printf("moving Left\n");
-            moveLeft();
+            if (!is_paused){            
+                printf("moving Left\n");
+                moveLeft();
+            }
             break;
         case GDK_KEY_s:
         case GDK_KEY_S:
-            printf("moving down\n");
-            moveDown();
+            if (!is_paused){            
+                printf("moving down\n");
+                moveDown();
+            }
             break;
         case GDK_KEY_d:
         case GDK_KEY_D:
-            printf("moving right\n");
-            moveRight();
+            if (!is_paused){            
+                printf("moving right\n");
+                moveRight();
+            }
+            break;
+        case GDK_KEY_space:
+            if (!is_paused){
+                printf("dropping\n");
+                drop();
+            }
+            break;
+        case GDK_KEY_Escape:
+            printf("pausing\n");
+            is_paused = !is_paused;
             break;
         default:
             printf("nothing\n");
@@ -112,18 +131,14 @@ gboolean update_grid(gpointer user_data){
         prepare();
         prepared = 1;
     }
-    //showPlayingField();
-    settle_tetromino();
-    moveDown();
-    //showPlayingField();
-    //showPlayingField();
+    if (!is_paused){
+        settle_tetromino();
+        moveDown();
+    }
     return TRUE;
 }
 
 gboolean on_tick_callback(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer user_data) {
-    //gint64 frame_time = gdk_frame_clock_get_frame_time(frame_clock);
-    //char fps[] = {"FPS: " + ((char[] )frame_time)};
-    //gtk_label_set_text(GTK_LABEL(fps_label), fps);
     gtk_widget_queue_draw(GTK_WIDGET(area));
     return TRUE;
 }

@@ -53,10 +53,10 @@ void key_handling(){
 //checks if an about to be placed tetromino can be placed. If the space is taken it returns 0
 int checkForSpace(){
     //printf("checking if space is available\n");
-    if (fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] == '0') {
-        if (fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] == '0') {
-            if (fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] == '0') {
-                if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] == '0') {
+    if (fieldValues[currentTetrominoPtr->y_values[0]][currentTetrominoPtr->x_values[0]] == '0') {
+        if (fieldValues[currentTetrominoPtr->y_values[1]][currentTetrominoPtr->x_values[1]] == '0') {
+            if (fieldValues[currentTetrominoPtr->y_values[2]][currentTetrominoPtr->x_values[2]] == '0') {
+                if (fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3]] == '0') {
                     return 1;
                 }
             }
@@ -65,7 +65,19 @@ int checkForSpace(){
     return 0;
 }
 
+void placeTetromino(){ 
+    //printf("placing the tetromino\n");
+    for (int i = 0; i < 4; i++){
+        fieldValues[currentTetrominoPtr->y_values[i]][currentTetrominoPtr->x_values[i]] = currentTetrominoPtr->fieldValue;
+    }
+}
 
+void clearTetromino(){
+    //printf("clearing tetromino\n");
+    for (int i = 0; i < 4; i++){
+        fieldValues[currentTetrominoPtr->y_values[i]][currentTetrominoPtr->x_values[i]] = '0';
+    }
+}
 
 //creates a random new Tetromino
 void createTetromino(){
@@ -84,92 +96,92 @@ void createTetromino(){
     //set the default values, including starting position, for each possible tetromino
     switch(possibleTetrominos[randomTetromino]){
         case 'J':
-            currentTetrominoPtr->y1 = 0;
-            currentTetrominoPtr->y2 = 1;
-            currentTetrominoPtr->y3 = 2;
-            currentTetrominoPtr->y4 = 2;
-            currentTetrominoPtr->x1 = 4;
-            currentTetrominoPtr->x2 = 4;
-            currentTetrominoPtr->x3 = 4;
-            currentTetrominoPtr->x4 = 3;
+            currentTetrominoPtr->y_values[0] = 0;
+            currentTetrominoPtr->y_values[1] = 1;
+            currentTetrominoPtr->y_values[2] = 2;
+            currentTetrominoPtr->y_values[3] = 2;
+            currentTetrominoPtr->x_values[0] = 4;
+            currentTetrominoPtr->x_values[1] = 4;
+            currentTetrominoPtr->x_values[2] = 4;
+            currentTetrominoPtr->x_values[3] = 3;
             currentTetrominoPtr->fieldValue = 'J';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
             break;
         case 'L':
-            currentTetrominoPtr->y1 = 0;
-            currentTetrominoPtr->y2 = 1;
-            currentTetrominoPtr->y3 = 2;
-            currentTetrominoPtr->y4 = 2;
-            currentTetrominoPtr->x1 = 4;
-            currentTetrominoPtr->x2 = 4;
-            currentTetrominoPtr->x3 = 4;
-            currentTetrominoPtr->x4 = 5;
+            currentTetrominoPtr->y_values[0] = 0;
+            currentTetrominoPtr->y_values[1] = 1;
+            currentTetrominoPtr->y_values[2] = 2;
+            currentTetrominoPtr->y_values[3] = 2;
+            currentTetrominoPtr->x_values[0] = 4;
+            currentTetrominoPtr->x_values[1] = 4;
+            currentTetrominoPtr->x_values[2] = 4;
+            currentTetrominoPtr->x_values[3] = 5;
             currentTetrominoPtr->fieldValue = 'L';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
             break;
         case 'O':
-            currentTetrominoPtr->y1 = 0;
-            currentTetrominoPtr->y2 = 0;
-            currentTetrominoPtr->y3 = 1;
-            currentTetrominoPtr->y4 = 1;
-            currentTetrominoPtr->x1 = 4;
-            currentTetrominoPtr->x2 = 5;
-            currentTetrominoPtr->x3 = 4;
-            currentTetrominoPtr->x4 = 5;
+            currentTetrominoPtr->y_values[0] = 0;
+            currentTetrominoPtr->y_values[1] = 0;
+            currentTetrominoPtr->y_values[2] = 1;
+            currentTetrominoPtr->y_values[3] = 1;
+            currentTetrominoPtr->x_values[0] = 4;
+            currentTetrominoPtr->x_values[1] = 5;
+            currentTetrominoPtr->x_values[2] = 4;
+            currentTetrominoPtr->x_values[3] = 5;
             currentTetrominoPtr->fieldValue = 'O';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
             break;
         case 'I':
-            currentTetrominoPtr->y1 = 0;
-            currentTetrominoPtr->y2 = 1;
-            currentTetrominoPtr->y3 = 2;
-            currentTetrominoPtr->y4 = 3;
-            currentTetrominoPtr->x1 = 4;
-            currentTetrominoPtr->x2 = 4;
-            currentTetrominoPtr->x3 = 4;
-            currentTetrominoPtr->x4 = 4;
+            currentTetrominoPtr->y_values[0] = 0;
+            currentTetrominoPtr->y_values[1] = 1;
+            currentTetrominoPtr->y_values[2] = 2;
+            currentTetrominoPtr->y_values[3] = 3;
+            currentTetrominoPtr->x_values[0] = 4;
+            currentTetrominoPtr->x_values[1] = 4;
+            currentTetrominoPtr->x_values[2] = 4;
+            currentTetrominoPtr->x_values[3] = 4;
             currentTetrominoPtr->fieldValue = 'I';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
             break;
         case 'S':
-            currentTetrominoPtr->y1 = 0;
-            currentTetrominoPtr->y2 = 1;
-            currentTetrominoPtr->y3 = 1;
-            currentTetrominoPtr->y4 = 2;
-            currentTetrominoPtr->x1 = 4;
-            currentTetrominoPtr->x2 = 4;
-            currentTetrominoPtr->x3 = 5;
-            currentTetrominoPtr->x4 = 5;
+            currentTetrominoPtr->y_values[0] = 0;
+            currentTetrominoPtr->y_values[1] = 1;
+            currentTetrominoPtr->y_values[2] = 1;
+            currentTetrominoPtr->y_values[3] = 2;
+            currentTetrominoPtr->x_values[0] = 4;
+            currentTetrominoPtr->x_values[1] = 4;
+            currentTetrominoPtr->x_values[2] = 5;
+            currentTetrominoPtr->x_values[3] = 5;
             currentTetrominoPtr->fieldValue = 'S';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
             break;
         case 'Z':
-            currentTetrominoPtr->y1 = 0;
-            currentTetrominoPtr->y2 = 1;
-            currentTetrominoPtr->y3 = 1;
-            currentTetrominoPtr->y4 = 2;
-            currentTetrominoPtr->x1 = 5;
-            currentTetrominoPtr->x2 = 5;
-            currentTetrominoPtr->x3 = 4;
-            currentTetrominoPtr->x4 = 4;
+            currentTetrominoPtr->y_values[0] = 0;
+            currentTetrominoPtr->y_values[1] = 1;
+            currentTetrominoPtr->y_values[2] = 1;
+            currentTetrominoPtr->y_values[3] = 2;
+            currentTetrominoPtr->x_values[0] = 5;
+            currentTetrominoPtr->x_values[1] = 5;
+            currentTetrominoPtr->x_values[2] = 4;
+            currentTetrominoPtr->x_values[3] = 4;
             currentTetrominoPtr->fieldValue = 'Z';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
             break;
         case 'T':
-            currentTetrominoPtr->y1 = 0;
-            currentTetrominoPtr->y2 = 1;
-            currentTetrominoPtr->y3 = 2;
-            currentTetrominoPtr->y4 = 1;
-            currentTetrominoPtr->x1 = 5;
-            currentTetrominoPtr->x2 = 5;
-            currentTetrominoPtr->x3 = 5;
-            currentTetrominoPtr->x4 = 4;
+            currentTetrominoPtr->y_values[0] = 0;
+            currentTetrominoPtr->y_values[1] = 1;
+            currentTetrominoPtr->y_values[2] = 2;
+            currentTetrominoPtr->y_values[3] = 1;
+            currentTetrominoPtr->x_values[0] = 5;
+            currentTetrominoPtr->x_values[1] = 5;
+            currentTetrominoPtr->x_values[2] = 5;
+            currentTetrominoPtr->x_values[3] = 4;
             currentTetrominoPtr->fieldValue = 'T';
             currentTetrominoPtr->rotation = 1;
             currentTetrominoPtr->game_over = 0;
@@ -184,7 +196,8 @@ void createTetromino(){
         printf("not enough Space\n");
         gameOver();
     }
-
+    
+    placeTetromino();
 }
 
 void showPlayingField(){
@@ -242,56 +255,48 @@ void tetrominoSettled(){
     //printf("setteling tetromino\n");
     switch(currentTetrominoPtr->fieldValue) {
         case 'L':
-            fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '1';
-            fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = '1';
-            fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = '1';
-            fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = '1';
+            for (int i = 0; i < 4; i++){
+                fieldValues[currentTetrominoPtr->y_values[i]][currentTetrominoPtr->x_values[i]] = '1';
+            }
             break;
         case 'J':
-            fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '2';
-            fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = '2';
-            fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = '2';
-            fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = '2';
+            for (int i = 0; i < 4; i++){
+                fieldValues[currentTetrominoPtr->y_values[i]][currentTetrominoPtr->x_values[i]] = '2';
+            }
             break;
         case 'O':
-            fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '3';
-            fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = '3';
-            fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = '3';
-            fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = '3';
+            for (int i = 0; i < 4; i++){
+                fieldValues[currentTetrominoPtr->y_values[i]][currentTetrominoPtr->x_values[i]] = '3';
+            }
             break;
         case 'I':
-            fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '4';
-            fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = '4';
-            fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = '4';
-            fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = '4';
+            for (int i = 0; i < 4; i++){
+                fieldValues[currentTetrominoPtr->y_values[i]][currentTetrominoPtr->x_values[i]] = '4';
+            }
             break;
         case 'S':
-            fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '5';
-            fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = '5';
-            fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = '5';
-            fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = '5';
+            for (int i = 0; i < 4; i++){
+                fieldValues[currentTetrominoPtr->y_values[i]][currentTetrominoPtr->x_values[i]] = '5';
+            }
             break;
         case 'Z':
-            fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '6';
-            fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = '6';
-            fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = '6';
-            fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = '6';
+            for (int i = 0; i < 4; i++){
+                fieldValues[currentTetrominoPtr->y_values[i]][currentTetrominoPtr->x_values[i]] = '6';
+            }
             break;
         case 'T':
-            fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '7';
-            fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = '7';
-            fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = '7';
-            fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = '7';
+            for (int i = 0; i < 4; i++){
+                fieldValues[currentTetrominoPtr->y_values[i]][currentTetrominoPtr->x_values[i]] = '7';
+            }
             break;
         default:
-            fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '1';
-            fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = '1';
-            fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = '1';
-            fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = '1';
+            for (int i = 0; i < 4; i++){
+                fieldValues[currentTetrominoPtr->y_values[i]][currentTetrominoPtr->x_values[i]] = '1';
+            }
             break;
     }
     //printf("checking if reached the top row\n");
-    if (currentTetrominoPtr->y4 == 0 || currentTetrominoPtr->y3 == 0 || currentTetrominoPtr->y2 == 0 || currentTetrominoPtr->y1 == 0){
+    if (currentTetrominoPtr->y_values[3] == 0 || currentTetrominoPtr->y_values[2] == 0 || currentTetrominoPtr->y_values[1] == 0 || currentTetrominoPtr->y_values[0] == 0){
         printf("game finished\n");
         gameFinished = 1;
     }
@@ -304,26 +309,11 @@ void tetrominoSettled(){
 
 
 
-void placeTetromino(){ 
-    //printf("placing the tetromino\n");
-    fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = currentTetrominoPtr->fieldValue;
-    fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = currentTetrominoPtr->fieldValue;
-    fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = currentTetrominoPtr->fieldValue;
-    fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = currentTetrominoPtr->fieldValue;
-}
 
-void clearTetromino(){
-    //printf("clearing tetromino\n");
-    fieldValues[currentTetrominoPtr->y1][currentTetrominoPtr->x1] = '0';
-    fieldValues[currentTetrominoPtr->y2][currentTetrominoPtr->x2] = '0';
-    fieldValues[currentTetrominoPtr->y3][currentTetrominoPtr->x3] = '0';
-    fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4] = '0';
-
-}
 void settle_tetromino(){
     if (currentTetrominoPtr != NULL) {
         //printf("checking if a tetromino should settle\n");
-        if (currentTetrominoPtr->y1 >= 19 || currentTetrominoPtr->y2 >= 19 || currentTetrominoPtr->y3 >= 19 || currentTetrominoPtr->y4 >= 19){
+        if (currentTetrominoPtr->y_values[3] >= 19 || currentTetrominoPtr->y_values[2] >= 19 || currentTetrominoPtr->y_values[1] >= 19 || currentTetrominoPtr->y_values[0] >= 19){
             //printf("reached the lowest point\n");
             tetrominoSettled();
         } else {
@@ -344,13 +334,15 @@ void settle_tetromino(){
 
         }
         //printf("after skip_check\n");
+    } else {
+        createTetromino();
     }
 }
 
 void moveLeft(){
     if (currentTetrominoPtr != NULL){
         //printf("\033[0;31mmoving Left\033[0m\n");
-        if (currentTetrominoPtr->x1 > 0 && currentTetrominoPtr->x2 > 0 && currentTetrominoPtr->x3 > 0 && currentTetrominoPtr->x4 > 0) {
+        if (currentTetrominoPtr->x_values[0] > 0 && currentTetrominoPtr->x_values[1] > 0 && currentTetrominoPtr->x_values[2] > 0 && currentTetrominoPtr->x_values[3] > 0) {
             int canMove = 1;
             for (int y = 19; y >= 0; y--) {  // Start from the bottom for safe shifting
                 for (int x = 0; x < 10; x++) {  // Field has 10 columns
@@ -363,10 +355,10 @@ void moveLeft(){
             }
             if (canMove){
                 clearTetromino();
-                currentTetrominoPtr->x1--;
-                currentTetrominoPtr->x2--;
-                currentTetrominoPtr->x3--;
-                currentTetrominoPtr->x4--;
+                currentTetrominoPtr->x_values[0]--;
+                currentTetrominoPtr->x_values[1]--;
+                currentTetrominoPtr->x_values[2]--;
+                currentTetrominoPtr->x_values[3]--;
                 placeTetromino();
             }
         }
@@ -376,7 +368,7 @@ void moveLeft(){
 void moveRight(){
     if (currentTetrominoPtr != NULL){
         //printf("\033[0;31mmoving right\033[0m\n");
-        if (currentTetrominoPtr->x1 < 9 && currentTetrominoPtr->x2 < 9 && currentTetrominoPtr->x3 < 9 && currentTetrominoPtr->x4 < 9) {
+        if (currentTetrominoPtr->x_values[0] < 9 && currentTetrominoPtr->x_values[1] < 9 && currentTetrominoPtr->x_values[2] < 9 && currentTetrominoPtr->x_values[0] < 9) {
             int canMove = 1;
             for (int y = 19; y >= 0; y--) {  // Start from the bottom for safe shifting
                 for (int x = 0; x < 10; x++) {  // Field has 10 columns
@@ -389,10 +381,10 @@ void moveRight(){
             }
             if (canMove){
                 clearTetromino();
-                currentTetrominoPtr->x1++;
-                currentTetrominoPtr->x2++;
-                currentTetrominoPtr->x3++;
-                currentTetrominoPtr->x4++;
+                currentTetrominoPtr->x_values[0]++;
+                currentTetrominoPtr->x_values[1]++;
+                currentTetrominoPtr->x_values[2]++;
+                currentTetrominoPtr->x_values[3]++;
                 placeTetromino();
             }
         }
@@ -405,7 +397,7 @@ void moveDown() {
         //printf("after lock\n");
 
         // Check if any part of the tetromino can move down (i.e., not at the bottom row)
-        if (currentTetrominoPtr->y1 < 19 && currentTetrominoPtr->y2 < 19 && currentTetrominoPtr->y3 < 19 && currentTetrominoPtr->y4 < 19) {
+        if (currentTetrominoPtr->y_values[0] < 19 && currentTetrominoPtr->y_values[1] < 19 && currentTetrominoPtr->y_values[2] < 19 && currentTetrominoPtr->y_values[2] < 19) {
             int canMove = 1;
 
             // Loop over the entire field to check if the tetromino can move down
@@ -427,10 +419,10 @@ void moveDown() {
             // If tetromino can move, move it down
             if (canMove) {
                 clearTetromino();  // Clear current position of the tetromino
-                currentTetrominoPtr->y1++;
-                currentTetrominoPtr->y2++;
-                currentTetrominoPtr->y3++;
-                currentTetrominoPtr->y4++;
+                currentTetrominoPtr->y_values[0]++;
+                currentTetrominoPtr->y_values[1]++;
+                currentTetrominoPtr->y_values[2]++;
+                currentTetrominoPtr->y_values[3]++;
                 placeTetromino();  // Place tetromino in the new position
             }
 
@@ -444,11 +436,56 @@ void moveDown() {
     }
 }
 
+int get_lowest_block(){
+    int value = 0;
+    for (int i = 0; i < 4; i++){
+        if (currentTetrominoPtr->y_values[i] >= value) value = currentTetrominoPtr->y_values[i];
+    }
+    return value;
+}
 int is_in_boundries(int y, int x){
     if (y < (sizeof(fieldValues)/sizeof(char)) && x < (sizeof(fieldValues[y])/sizeof(char))) {
         return 1;
     } else {
         return 0;
+    }
+}
+
+void drop() {
+    if (currentTetrominoPtr != NULL) {
+        int drop_for = 19 - get_lowest_block(); // Start assuming it can drop to y = 19
+        int y = get_lowest_block(); // The lowest block of the tetromino
+        
+        for (int i = y + 1; i < 20; i++) { // Start checking from the row below the lowest block
+            int can_drop = 1; // Assume all blocks can drop
+            
+            for (int j = 0; j < 4; j++) { 
+                int new_y = currentTetrominoPtr->y_values[j] + (i - y); // Potential new y position
+                int x = currentTetrominoPtr->x_values[j]; // x position remains constant
+                
+                // Check if the block can be placed at the new position
+                if (new_y >= 20 || 
+                    (fieldValues[new_y][x] != '0' && 
+                     fieldValues[new_y][x] != currentTetrominoPtr->fieldValue)) {
+                    can_drop = 0; // If any block cannot move, set flag to false
+                    break; // No need to check other blocks if one cannot move
+                }
+            }
+
+            if (!can_drop) { 
+                drop_for = i - 1 - y; // Adjust drop_for to place the tetromino just above the obstruction
+                break; // Stop checking further down the field
+            }
+        }
+
+        // Drop the tetromino by the calculated amount
+        clearTetromino();  // Remove the tetromino from its current position
+        for (int i = 0; i < 4; i++) {
+            currentTetrominoPtr->y_values[i] += drop_for;  // Update the y positions by the drop amount
+        }
+        placeTetromino();  // Place the tetromino at the new position
+        settle_tetromino();
+        createTetromino();
     }
 }
 
@@ -460,15 +497,15 @@ void rotate_tetromino(){
             //printf("\033[0;32mrotating Tetromino L\033[0m\n\n");
             switch(currentTetrominoPtr->rotation){
                 case 1:
-                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
-                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0' && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 - 1)){
-                            if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == '0' && is_in_boundries(currentTetrominoPtr->y4, currentTetrominoPtr->x4 - 2)){
+                    if (fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] + 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] + 1)){
+                        if (fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] - 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if (fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3] - 2] == '0' && is_in_boundries(currentTetrominoPtr->y_values[3], currentTetrominoPtr->x_values[3] - 2)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 += 1;
-                                currentTetrominoPtr->y1 += 1;
-                                currentTetrominoPtr->x3 -= 1;
-                                currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->x4 -= 2;
+                                currentTetrominoPtr->x_values[0] += 1;
+                                currentTetrominoPtr->y_values[0] += 1;
+                                currentTetrominoPtr->x_values[2] -= 1;
+                                currentTetrominoPtr->y_values[2] -= 1;
+                                currentTetrominoPtr->x_values[3] -= 2;
 
                                 currentTetrominoPtr->rotation = 2;
                                 placeTetromino();
@@ -478,15 +515,15 @@ void rotate_tetromino(){
                     break;
 
                 case 2:
-                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 - 1)){
-                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 + 1)){
-                            if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == '0' && is_in_boundries(currentTetrominoPtr->y4 - 2, currentTetrominoPtr->x4)){
+                    if (fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] - 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] - 1)){
+                        if (fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] + 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] + 1)){
+                            if (fieldValues[currentTetrominoPtr->y_values[3] - 2][currentTetrominoPtr->x_values[3]] == '0' && is_in_boundries(currentTetrominoPtr->y_values[3] - 2, currentTetrominoPtr->x_values[3])){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 -= 1;
-                                currentTetrominoPtr->y1 += 1;
-                                currentTetrominoPtr->x3 += 1;
-                                currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->y4 -= 2;
+                                currentTetrominoPtr->x_values[0] -= 1;
+                                currentTetrominoPtr->y_values[0] += 1;
+                                currentTetrominoPtr->x_values[2] += 1;
+                                currentTetrominoPtr->y_values[2] -= 1;
+                                currentTetrominoPtr->y_values[3] -= 2;
 
                                 currentTetrominoPtr->rotation = 3;
                                 placeTetromino();
@@ -496,15 +533,15 @@ void rotate_tetromino(){
                     break;
                     
                 case 3:
-                    if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 - 1, currentTetrominoPtr->x1 - 1)){
-                        if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y3 + 1, currentTetrominoPtr->x3 + 1)){
-                            if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == '0' && is_in_boundries(currentTetrominoPtr->y4, currentTetrominoPtr->x4 + 2)){
+                    if (fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] - 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[0] - 1, currentTetrominoPtr->x_values[0] - 1)){
+                        if (fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] + 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[2] + 1, currentTetrominoPtr->x_values[2] + 1)){
+                            if (fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3] + 2] == '0' && is_in_boundries(currentTetrominoPtr->y_values[3], currentTetrominoPtr->x_values[3] + 2)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 -= 1;
-                                currentTetrominoPtr->y1 -= 1;
-                                currentTetrominoPtr->x3 += 1;
-                                currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->x4 += 2;
+                                currentTetrominoPtr->x_values[0] -= 1;
+                                currentTetrominoPtr->y_values[0] -= 1;
+                                currentTetrominoPtr->x_values[2] += 1;
+                                currentTetrominoPtr->y_values[2] += 1;
+                                currentTetrominoPtr->x_values[3] += 2;
 
                                 currentTetrominoPtr->rotation = 4;
                                 placeTetromino();
@@ -514,15 +551,15 @@ void rotate_tetromino(){
                     break;
 
                 case 4:
-                    if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 - 1, currentTetrominoPtr->x1 + 1)){
-                        if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0' && is_in_boundries(currentTetrominoPtr->y3 + 1, currentTetrominoPtr->x3 - 1)){
-                            if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0' && is_in_boundries(currentTetrominoPtr->y4 + 2, currentTetrominoPtr->x4)){
+                    if (fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] + 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[0] - 1, currentTetrominoPtr->x_values[0] + 1)){
+                        if (fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] - 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[2] + 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if (fieldValues[currentTetrominoPtr->y_values[3] + 2][currentTetrominoPtr->x_values[3]] == '0' && is_in_boundries(currentTetrominoPtr->y_values[3] + 2, currentTetrominoPtr->x_values[3])){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 += 1;
-                                currentTetrominoPtr->y1 -= 1;
-                                currentTetrominoPtr->x3 -= 1;
-                                currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->y4 += 2;
+                                currentTetrominoPtr->x_values[0] += 1;
+                                currentTetrominoPtr->y_values[0] -= 1;
+                                currentTetrominoPtr->x_values[2] -= 1;
+                                currentTetrominoPtr->y_values[2] += 1;
+                                currentTetrominoPtr->y_values[3] += 2;
 
                                 currentTetrominoPtr->rotation = 1;
                                 placeTetromino();
@@ -536,15 +573,15 @@ void rotate_tetromino(){
             //printf("\033[0;32mrotating Tetromino J\033[0m\n\n");
             switch(currentTetrominoPtr->rotation){
                 case 1:
-                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
-                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0' && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 - 1)){
-                            if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == '0' && is_in_boundries(currentTetrominoPtr->y4 - 2, currentTetrominoPtr->x4)){
+                    if (fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] + 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] + 1)){
+                        if (fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] - 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if (fieldValues[currentTetrominoPtr->y_values[3] - 2][currentTetrominoPtr->x_values[3]] == '0' && is_in_boundries(currentTetrominoPtr->y_values[3] - 2, currentTetrominoPtr->x_values[3])){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 += 1;
-                                currentTetrominoPtr->y1 += 1;
-                                currentTetrominoPtr->x3 -= 1;
-                                currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->y4 -= 2;
+                                currentTetrominoPtr->x_values[0] += 1;
+                                currentTetrominoPtr->y_values[0] += 1;
+                                currentTetrominoPtr->x_values[2] -= 1;
+                                currentTetrominoPtr->y_values[2] -= 1;
+                                currentTetrominoPtr->y_values[3] -= 2;
 
                                 currentTetrominoPtr->rotation = 2;
                                 placeTetromino();
@@ -555,15 +592,15 @@ void rotate_tetromino(){
 
 
                 case 2:
-                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 - 1)){
-                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 + 1)){
-                            if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == '0' && is_in_boundries(currentTetrominoPtr->y4, currentTetrominoPtr->x4 + 2)){
+                    if (fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] - 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] - 1)){
+                        if (fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] + 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] + 1)){
+                            if (fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3] + 2] == '0' && is_in_boundries(currentTetrominoPtr->y_values[3], currentTetrominoPtr->x_values[3] + 2)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 -= 1;
-                                currentTetrominoPtr->y1 += 1;
-                                currentTetrominoPtr->x3 += 1;
-                                currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->x4 += 2;
+                                currentTetrominoPtr->x_values[0] -= 1;
+                                currentTetrominoPtr->y_values[0] += 1;
+                                currentTetrominoPtr->x_values[2] += 1;
+                                currentTetrominoPtr->y_values[2] -= 1;
+                                currentTetrominoPtr->x_values[3] += 2;
 
                                 currentTetrominoPtr->rotation = 3;
                                 placeTetromino();
@@ -574,15 +611,15 @@ void rotate_tetromino(){
 
 
                 case 3:
-                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
-                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0' && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 - 1)){
-                            if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0' && is_in_boundries(currentTetrominoPtr->y4 + 2, currentTetrominoPtr->x4)){
+                    if (fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] + 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] + 1)){
+                        if (fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] - 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if (fieldValues[currentTetrominoPtr->y_values[3] + 2][currentTetrominoPtr->x_values[3]] == '0' && is_in_boundries(currentTetrominoPtr->y_values[3] + 2, currentTetrominoPtr->x_values[3])){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 -= 1;
-                                currentTetrominoPtr->y1 -= 1;
-                                currentTetrominoPtr->x3 += 1;
-                                currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->y4 += 2;
+                                currentTetrominoPtr->x_values[0] -= 1;
+                                currentTetrominoPtr->y_values[0] -= 1;
+                                currentTetrominoPtr->x_values[2] += 1;
+                                currentTetrominoPtr->y_values[2] += 1;
+                                currentTetrominoPtr->y_values[3] += 2;
 
                                 currentTetrominoPtr->rotation = 4;
                                 placeTetromino();
@@ -592,15 +629,15 @@ void rotate_tetromino(){
                     break;
 
                 case 4:
-                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 - 1)){
-                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 + 1)){
-                            if (fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == '0' && is_in_boundries(currentTetrominoPtr->y4, currentTetrominoPtr->x4 - 2)){
+                    if (fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] - 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] - 1)){
+                        if (fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] + 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] + 1)){
+                            if (fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3] - 2] == '0' && is_in_boundries(currentTetrominoPtr->y_values[3], currentTetrominoPtr->x_values[3] - 2)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 += 1;
-                                currentTetrominoPtr->y1 -= 1;
-                                currentTetrominoPtr->x3 -= 1;
-                                currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->x4 -= 2;
+                                currentTetrominoPtr->x_values[0] += 1;
+                                currentTetrominoPtr->y_values[0] -= 1;
+                                currentTetrominoPtr->x_values[2] -= 1;
+                                currentTetrominoPtr->y_values[2] += 1;
+                                currentTetrominoPtr->x_values[3] -= 2;
 
                                 currentTetrominoPtr->rotation = 1;
                                 placeTetromino();
@@ -614,16 +651,16 @@ void rotate_tetromino(){
             //printf("\033[0;32mrotating Tetromino I\033[0m\n\n");
             switch(currentTetrominoPtr->rotation){
                 case 1:
-                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
-                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0' && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 - 1)){
-                            if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4 - 2] == '0' && is_in_boundries(currentTetrominoPtr->y4 - 2, currentTetrominoPtr->x4 - 2)){
+                    if (fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] + 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] + 1)){
+                        if (fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] - 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if (fieldValues[currentTetrominoPtr->y_values[3] - 2][currentTetrominoPtr->x_values[3] - 2] == '0' && is_in_boundries(currentTetrominoPtr->y_values[3] - 2, currentTetrominoPtr->x_values[3] - 2)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 += 1;
-                                currentTetrominoPtr->y1 += 1;
-                                currentTetrominoPtr->x3 -= 1;
-                                currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->x4 -= 2;
-                                currentTetrominoPtr->y4 -= 2;
+                                currentTetrominoPtr->x_values[0] += 1;
+                                currentTetrominoPtr->y_values[0] += 1;
+                                currentTetrominoPtr->x_values[2] -= 1;
+                                currentTetrominoPtr->y_values[2] -= 1;
+                                currentTetrominoPtr->x_values[3] -= 2;
+                                currentTetrominoPtr->y_values[3] -= 2;
 
                                 currentTetrominoPtr->rotation = 2;
                                 placeTetromino();
@@ -634,16 +671,16 @@ void rotate_tetromino(){
 
 
                 case 2:
-                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 - 1)){
-                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 + 1)){
-                            if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4 + 2] == '0' && is_in_boundries(currentTetrominoPtr->y4 - 2, currentTetrominoPtr->x4 + 2)){
+                    if (fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] - 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] - 1)){
+                        if (fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] + 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] + 1)){
+                            if (fieldValues[currentTetrominoPtr->y_values[3] - 2][currentTetrominoPtr->x_values[3] + 2] == '0' && is_in_boundries(currentTetrominoPtr->y_values[3] - 2, currentTetrominoPtr->x_values[3] + 2)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 -= 1;
-                                currentTetrominoPtr->y1 += 1;
-                                currentTetrominoPtr->x3 += 1;
-                                currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->x4 += 2;
-                                currentTetrominoPtr->y4 -= 2;
+                                currentTetrominoPtr->x_values[0] -= 1;
+                                currentTetrominoPtr->y_values[0] += 1;
+                                currentTetrominoPtr->x_values[2] += 1;
+                                currentTetrominoPtr->y_values[2] -= 1;
+                                currentTetrominoPtr->x_values[3] += 2;
+                                currentTetrominoPtr->y_values[3] -= 2;
 
                                 currentTetrominoPtr->rotation = 3;
                                 placeTetromino();
@@ -654,16 +691,16 @@ void rotate_tetromino(){
 
 
                 case 3:
-                    if (fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 - 1, currentTetrominoPtr->x1 - 1)){
-                        if (fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y3 + 1, currentTetrominoPtr->x3 + 1)){
-                            if (fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4 + 2] == '0' && is_in_boundries(currentTetrominoPtr->y4 + 2, currentTetrominoPtr->x4 + 2)){
+                    if (fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] - 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[0] - 1, currentTetrominoPtr->x_values[0] - 1)){
+                        if (fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] + 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[2] + 1, currentTetrominoPtr->x_values[2] + 1)){
+                            if (fieldValues[currentTetrominoPtr->y_values[3] + 2][currentTetrominoPtr->x_values[3] + 2] == '0' && is_in_boundries(currentTetrominoPtr->y_values[3] + 2, currentTetrominoPtr->x_values[3] + 2)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 -= 1;
-                                currentTetrominoPtr->y1 -= 1;
-                                currentTetrominoPtr->x3 += 1;
-                                currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->x4 += 2;
-                                currentTetrominoPtr->y4 += 2;
+                                currentTetrominoPtr->x_values[0] -= 1;
+                                currentTetrominoPtr->y_values[0] -= 1;
+                                currentTetrominoPtr->x_values[2] += 1;
+                                currentTetrominoPtr->y_values[2] += 1;
+                                currentTetrominoPtr->x_values[3] += 2;
+                                currentTetrominoPtr->y_values[3] += 2;
 
                                 currentTetrominoPtr->rotation = 4;
                                 placeTetromino();
@@ -674,16 +711,16 @@ void rotate_tetromino(){
 
 
                 case 4:
-                    if (fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0' && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 - 1)){
-                        if (fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0' && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 + 1)){
-                            if (fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4 + 2] == '0' && is_in_boundries(currentTetrominoPtr->y4 - 2, currentTetrominoPtr->x4 + 2)){
+                    if (fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] - 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] - 1)){
+                        if (fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] + 1] == '0' && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] + 1)){
+                            if (fieldValues[currentTetrominoPtr->y_values[3] - 2][currentTetrominoPtr->x_values[3] + 2] == '0' && is_in_boundries(currentTetrominoPtr->y_values[3] - 2, currentTetrominoPtr->x_values[3] + 2)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 += 1;
-                                currentTetrominoPtr->y1 -= 1;
-                                currentTetrominoPtr->x3 -= 1;
-                                currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->x4 -= 2;
-                                currentTetrominoPtr->y4 += 2;
+                                currentTetrominoPtr->x_values[0] += 1;
+                                currentTetrominoPtr->y_values[0] -= 1;
+                                currentTetrominoPtr->x_values[2] -= 1;
+                                currentTetrominoPtr->y_values[2] += 1;
+                                currentTetrominoPtr->x_values[3] -= 2;
+                                currentTetrominoPtr->y_values[3] += 2;
 
                                 currentTetrominoPtr->rotation = 1;
                                 placeTetromino();
@@ -700,15 +737,15 @@ void rotate_tetromino(){
             //printf("\033[0;32m%d\033[0m\n", currentTetrominoPtr->rotation);
             switch(currentTetrominoPtr->rotation){
                 case 1:
-                    if ((fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' || fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
-                        if ((fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0' || fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 - 1)){
-                            if ((fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == '0' || fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y4 - 2, currentTetrominoPtr->x4)){
+                    if ((fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] + 1)){
+                        if ((fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if ((fieldValues[currentTetrominoPtr->y_values[3] - 2][currentTetrominoPtr->x_values[3]] == '0' || fieldValues[currentTetrominoPtr->y_values[3] - 2][currentTetrominoPtr->x_values[3]] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[3] - 2, currentTetrominoPtr->x_values[3])){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 += 1;
-                                currentTetrominoPtr->y1 += 1;
-                                currentTetrominoPtr->x3 += 1;
-                                currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->y4 -= 2;
+                                currentTetrominoPtr->x_values[0] += 1;
+                                currentTetrominoPtr->y_values[0] += 1;
+                                currentTetrominoPtr->x_values[2] += 1;
+                                currentTetrominoPtr->y_values[2] -= 1;
+                                currentTetrominoPtr->y_values[3] -= 2;
 
                                 currentTetrominoPtr->rotation = 2;
                                 placeTetromino();
@@ -717,15 +754,15 @@ void rotate_tetromino(){
                     }
                     break;
                 case 2:
-                    if ((fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0' || fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 - 1)){
-                        if ((fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0' || fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y3 + 1, currentTetrominoPtr->x3 + 1)){
-                            if ((fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == '0' || fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y4, currentTetrominoPtr->x4 + 2)){
+                    if ((fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] - 1)){
+                        if ((fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[2] + 1, currentTetrominoPtr->x_values[2] + 1)){
+                            if ((fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3] + 2] == '0' || fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3] + 2] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[3], currentTetrominoPtr->x_values[3] + 2)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 -= 1;
-                                currentTetrominoPtr->y1 += 1;
-                                currentTetrominoPtr->x3 += 1;
-                                currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->x4 += 2;
+                                currentTetrominoPtr->x_values[0] -= 1;
+                                currentTetrominoPtr->y_values[0] += 1;
+                                currentTetrominoPtr->x_values[2] += 1;
+                                currentTetrominoPtr->y_values[2] += 1;
+                                currentTetrominoPtr->x_values[3] += 2;
 
                                 currentTetrominoPtr->rotation = 3;
                                 placeTetromino();
@@ -734,15 +771,15 @@ void rotate_tetromino(){
                     }
                     break;
                 case 3:
-                    if ((fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0' || fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 - 1, currentTetrominoPtr->x1 - 1)){
-                        if ((fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0' || fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y3 + 1, currentTetrominoPtr->x3 - 1)){
-                            if ((fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0' || fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y4 + 2, currentTetrominoPtr->x4)){
+                    if ((fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[0] - 1, currentTetrominoPtr->x_values[0] - 1)){
+                        if ((fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[2] + 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if ((fieldValues[currentTetrominoPtr->y_values[3] + 2][currentTetrominoPtr->x_values[3]] == '0' || fieldValues[currentTetrominoPtr->y_values[3] + 2][currentTetrominoPtr->x_values[3]] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[3] + 2, currentTetrominoPtr->x_values[3])){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 -= 1;
-                                currentTetrominoPtr->y1 -= 1;
-                                currentTetrominoPtr->x3 -= 1;
-                                currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->y4 += 2;
+                                currentTetrominoPtr->x_values[0] -= 1;
+                                currentTetrominoPtr->y_values[0] -= 1;
+                                currentTetrominoPtr->x_values[2] -= 1;
+                                currentTetrominoPtr->y_values[2] += 1;
+                                currentTetrominoPtr->y_values[3] += 2;
 
                                 currentTetrominoPtr->rotation = 4;
                                 placeTetromino();
@@ -751,15 +788,15 @@ void rotate_tetromino(){
                     }
                     break;
                 case 4:
-                    if ((fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0' || fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 - 1, currentTetrominoPtr->x1 + 1)){
-                        if ((fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0' || fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 - 1)){
-                            if ((fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == '0' || fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y4, currentTetrominoPtr->x4 - 2)){
+                    if ((fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[0] - 1, currentTetrominoPtr->x_values[0] + 1)){
+                        if ((fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if ((fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3] - 2] == '0' || fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3] - 2] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[3], currentTetrominoPtr->x_values[3] - 2)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 += 1;
-                                currentTetrominoPtr->y1 -= 1;
-                                currentTetrominoPtr->x3 -= 1;
-                                currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->x4 -= 2;
+                                currentTetrominoPtr->x_values[0] += 1;
+                                currentTetrominoPtr->y_values[0] -= 1;
+                                currentTetrominoPtr->x_values[2] -= 1;
+                                currentTetrominoPtr->y_values[2] -= 1;
+                                currentTetrominoPtr->x_values[3] -= 2;
 
                                 currentTetrominoPtr->rotation = 1;
                                 placeTetromino();
@@ -774,15 +811,15 @@ void rotate_tetromino(){
             //printf("\033[0;32m%d\033[0m\n", currentTetrominoPtr->rotation);
             switch(currentTetrominoPtr->rotation){
                 case 1:
-                    if ((fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' || fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
-                        if ((fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0' || fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y3 + 1, currentTetrominoPtr->x3 - 1)){
-                            if ((fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == '0' || fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 - 2] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y4, currentTetrominoPtr->x4 - 2)){
+                    if ((fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] + 1)){
+                        if ((fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[2] + 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if ((fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3] - 2] == '0' || fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3] - 2] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[3], currentTetrominoPtr->x_values[3] - 2)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 += 1;
-                                currentTetrominoPtr->y1 += 1;
-                                currentTetrominoPtr->x3 -= 1;
-                                currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->x4 -= 2;
+                                currentTetrominoPtr->x_values[0] += 1;
+                                currentTetrominoPtr->y_values[0] += 1;
+                                currentTetrominoPtr->x_values[2] -= 1;
+                                currentTetrominoPtr->y_values[2] += 1;
+                                currentTetrominoPtr->x_values[3] -= 2;
 
                                 currentTetrominoPtr->rotation = 2;
                                 placeTetromino();
@@ -792,15 +829,15 @@ void rotate_tetromino(){
                     break;
 
                 case 2:
-                    if ((fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0' || fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 - 1)){
-                        if ((fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0' || fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 - 1)){
-                            if ((fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == '0' || fieldValues[currentTetrominoPtr->y4 - 2][currentTetrominoPtr->x4] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y4 - 2, currentTetrominoPtr->x4)){
+                    if ((fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] - 1)){
+                        if ((fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if ((fieldValues[currentTetrominoPtr->y_values[3] - 2][currentTetrominoPtr->x_values[3]] == '0' || fieldValues[currentTetrominoPtr->y_values[3] - 2][currentTetrominoPtr->x_values[3]] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[3] - 2, currentTetrominoPtr->x_values[3])){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 -= 1;
-                                currentTetrominoPtr->y1 += 1;
-                                currentTetrominoPtr->x3 -= 1;
-                                currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->y4 -= 2;
+                                currentTetrominoPtr->x_values[0] -= 1;
+                                currentTetrominoPtr->y_values[0] += 1;
+                                currentTetrominoPtr->x_values[2] -= 1;
+                                currentTetrominoPtr->y_values[2] -= 1;
+                                currentTetrominoPtr->y_values[3] -= 2;
 
                                 currentTetrominoPtr->rotation = 3;
                                 placeTetromino();
@@ -809,15 +846,15 @@ void rotate_tetromino(){
                     }
                     break;
                 case 3:
-                    if ((fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == '0' || fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 - 1, currentTetrominoPtr->x1 - 1)){
-                        if ((fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0' || fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 + 1)){
-                            if ((fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == '0' || fieldValues[currentTetrominoPtr->y4][currentTetrominoPtr->x4 + 2] == currentTetrominoPtr->fieldValue )&& is_in_boundries(currentTetrominoPtr->y4, currentTetrominoPtr->x4 + 2)){
+                    if ((fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[0] - 1, currentTetrominoPtr->x_values[0] - 1)){
+                        if ((fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] + 1)){
+                            if ((fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3] + 2] == '0' || fieldValues[currentTetrominoPtr->y_values[3]][currentTetrominoPtr->x_values[3] + 2] == currentTetrominoPtr->fieldValue )&& is_in_boundries(currentTetrominoPtr->y_values[3], currentTetrominoPtr->x_values[3] + 2)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 -= 1;
-                                currentTetrominoPtr->y1 -= 1;
-                                currentTetrominoPtr->x3 += 1;
-                                currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->x4 += 2;
+                                currentTetrominoPtr->x_values[0] -= 1;
+                                currentTetrominoPtr->y_values[0] -= 1;
+                                currentTetrominoPtr->x_values[2] += 1;
+                                currentTetrominoPtr->y_values[2] -= 1;
+                                currentTetrominoPtr->x_values[3] += 2;
 
                                 currentTetrominoPtr->rotation = 4;
                                 placeTetromino();
@@ -826,15 +863,15 @@ void rotate_tetromino(){
                     }
                     break;
                 case 4:
-                    if ((fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0' || fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 - 1, currentTetrominoPtr->x1 + 1)){
-                        if ((fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == '0' || fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y3 + 1, currentTetrominoPtr->x3 + 1)){
-                            if ((fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == '0' || fieldValues[currentTetrominoPtr->y4 + 2][currentTetrominoPtr->x4] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y4 + 2, currentTetrominoPtr->x4)){
+                    if ((fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[0] - 1, currentTetrominoPtr->x_values[0] + 1)){
+                        if ((fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[2] + 1, currentTetrominoPtr->x_values[2] + 1)){
+                            if ((fieldValues[currentTetrominoPtr->y_values[3] + 2][currentTetrominoPtr->x_values[3]] == '0' || fieldValues[currentTetrominoPtr->y_values[3] + 2][currentTetrominoPtr->x_values[3]] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[3] + 2, currentTetrominoPtr->x_values[3])){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 += 1;
-                                currentTetrominoPtr->y1 -= 1;
-                                currentTetrominoPtr->x3 += 1;
-                                currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->y4 += 2;
+                                currentTetrominoPtr->x_values[0] += 1;
+                                currentTetrominoPtr->y_values[0] -= 1;
+                                currentTetrominoPtr->x_values[2] += 1;
+                                currentTetrominoPtr->y_values[2] += 1;
+                                currentTetrominoPtr->y_values[3] += 2;
 
                                 currentTetrominoPtr->rotation = 1;
                                 placeTetromino();
@@ -850,16 +887,16 @@ void rotate_tetromino(){
             //printf("\033[0;32m%d\033[0m\n", currentTetrominoPtr->rotation);
             switch(currentTetrominoPtr->rotation){
                 case 1:
-                    if ((fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == '0' || fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 + 1)){
-                        if ((fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == '0' || fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 - 1)){
-                            if ((fieldValues[currentTetrominoPtr->y4 - 1][currentTetrominoPtr->x4 + 1] == '0' || fieldValues[currentTetrominoPtr->y4 - 1][currentTetrominoPtr->x4 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y4 - 1, currentTetrominoPtr->x4 + 1)){
+                    if ((fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] + 1)){
+                        if ((fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if ((fieldValues[currentTetrominoPtr->y_values[3] - 1][currentTetrominoPtr->x_values[3] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[3] - 1][currentTetrominoPtr->x_values[3] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[3] - 1, currentTetrominoPtr->x_values[3] + 1)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 += 1;
-                                currentTetrominoPtr->y1 += 1;
-                                currentTetrominoPtr->x3 -= 1;
-                                currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->x4 += 1;
-                                currentTetrominoPtr->y4 -= 1;
+                                currentTetrominoPtr->x_values[0] += 1;
+                                currentTetrominoPtr->y_values[0] += 1;
+                                currentTetrominoPtr->x_values[2] -= 1;
+                                currentTetrominoPtr->y_values[2] -= 1;
+                                currentTetrominoPtr->x_values[3] += 1;
+                                currentTetrominoPtr->y_values[3] -= 1;
 
                                 currentTetrominoPtr->rotation = 2;
                                 placeTetromino();
@@ -868,16 +905,16 @@ void rotate_tetromino(){
                     }
                     break;
                 case 2:
-                    if ((fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == '0' || fieldValues[currentTetrominoPtr->y1 + 1][currentTetrominoPtr->x1 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 + 1, currentTetrominoPtr->x1 - 1)){
-                        if ((fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == '0' || fieldValues[currentTetrominoPtr->y3 - 1][currentTetrominoPtr->x3 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y3 - 1, currentTetrominoPtr->x3 + 1)){
-                            if ((fieldValues[currentTetrominoPtr->y4 + 1][currentTetrominoPtr->x4 + 1] == '0' || fieldValues[currentTetrominoPtr->y4 + 1][currentTetrominoPtr->x4 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y4 + 1, currentTetrominoPtr->x4 + 1)){
+                    if ((fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[0] + 1][currentTetrominoPtr->x_values[0] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[0] + 1, currentTetrominoPtr->x_values[0] - 1)){
+                        if ((fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[2] - 1][currentTetrominoPtr->x_values[2] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[2] - 1, currentTetrominoPtr->x_values[2] + 1)){
+                            if ((fieldValues[currentTetrominoPtr->y_values[3] + 1][currentTetrominoPtr->x_values[3] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[3] + 1][currentTetrominoPtr->x_values[3] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[3] + 1, currentTetrominoPtr->x_values[3] + 1)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 -= 1;
-                                currentTetrominoPtr->y1 += 1;
-                                currentTetrominoPtr->x3 += 1;
-                                currentTetrominoPtr->y3 -= 1;
-                                currentTetrominoPtr->x4 += 1;
-                                currentTetrominoPtr->y4 += 1;
+                                currentTetrominoPtr->x_values[0] -= 1;
+                                currentTetrominoPtr->y_values[0] += 1;
+                                currentTetrominoPtr->x_values[2] += 1;
+                                currentTetrominoPtr->y_values[2] -= 1;
+                                currentTetrominoPtr->x_values[3] += 1;
+                                currentTetrominoPtr->y_values[3] += 1;
 
                                 currentTetrominoPtr->rotation = 3;
                                 placeTetromino();
@@ -886,16 +923,16 @@ void rotate_tetromino(){
                     }
                     break;
                 case 3:
-                    if ((fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0' || fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 - 1, currentTetrominoPtr->x1 + 1)){
-                        if ((fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0' || fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y3 + 1, currentTetrominoPtr->x3 - 1)){
-                            if ((fieldValues[currentTetrominoPtr->y4 + 1][currentTetrominoPtr->x4 - 1] == '0' || fieldValues[currentTetrominoPtr->y4 + 1][currentTetrominoPtr->x4 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y4 + 1, currentTetrominoPtr->x4 - 1)){
+                    if ((fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[0] - 1, currentTetrominoPtr->x_values[0] + 1)){
+                        if ((fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[2] + 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if ((fieldValues[currentTetrominoPtr->y_values[3] + 1][currentTetrominoPtr->x_values[3] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[3] + 1][currentTetrominoPtr->x_values[3] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[3] + 1, currentTetrominoPtr->x_values[3] - 1)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 -= 1;
-                                currentTetrominoPtr->y1 -= 1;
-                                currentTetrominoPtr->x3 += 1;
-                                currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->y4 += 1;
-                                currentTetrominoPtr->x4 -= 1;
+                                currentTetrominoPtr->x_values[0] -= 1;
+                                currentTetrominoPtr->y_values[0] -= 1;
+                                currentTetrominoPtr->x_values[2] += 1;
+                                currentTetrominoPtr->y_values[2] += 1;
+                                currentTetrominoPtr->y_values[3] += 1;
+                                currentTetrominoPtr->x_values[3] -= 1;
 
                                 currentTetrominoPtr->rotation = 4;
                                 placeTetromino();
@@ -904,16 +941,16 @@ void rotate_tetromino(){
                     }
                     break;
                 case 4:
-                    if ((fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == '0' || fieldValues[currentTetrominoPtr->y1 - 1][currentTetrominoPtr->x1 + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y1 - 1, currentTetrominoPtr->x1 + 1)){
-                        if ((fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == '0' || fieldValues[currentTetrominoPtr->y3 + 1][currentTetrominoPtr->x3 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y3 + 1, currentTetrominoPtr->x3 - 1)){
-                            if ((fieldValues[currentTetrominoPtr->y4 - 1][currentTetrominoPtr->x4 - 1] == '0' || fieldValues[currentTetrominoPtr->y4 - 1][currentTetrominoPtr->x4 - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y4 - 1, currentTetrominoPtr->x4 - 1)){
+                    if ((fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] + 1] == '0' || fieldValues[currentTetrominoPtr->y_values[0] - 1][currentTetrominoPtr->x_values[0] + 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[0] - 1, currentTetrominoPtr->x_values[0] + 1)){
+                        if ((fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[2] + 1][currentTetrominoPtr->x_values[2] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[2] + 1, currentTetrominoPtr->x_values[2] - 1)){
+                            if ((fieldValues[currentTetrominoPtr->y_values[3] - 1][currentTetrominoPtr->x_values[3] - 1] == '0' || fieldValues[currentTetrominoPtr->y_values[3] - 1][currentTetrominoPtr->x_values[3] - 1] == currentTetrominoPtr->fieldValue) && is_in_boundries(currentTetrominoPtr->y_values[3] - 1, currentTetrominoPtr->x_values[3] - 1)){
                                 clearTetromino();
-                                currentTetrominoPtr->x1 += 1;
-                                currentTetrominoPtr->y1 -= 1;
-                                currentTetrominoPtr->x3 -= 1;
-                                currentTetrominoPtr->y3 += 1;
-                                currentTetrominoPtr->x4 -= 1;
-                                currentTetrominoPtr->y4 -= 1;
+                                currentTetrominoPtr->x_values[0] += 1;
+                                currentTetrominoPtr->y_values[0] -= 1;
+                                currentTetrominoPtr->x_values[2] -= 1;
+                                currentTetrominoPtr->y_values[2] += 1;
+                                currentTetrominoPtr->x_values[3] -= 1;
+                                currentTetrominoPtr->y_values[3] -= 1;
 
                                 currentTetrominoPtr->rotation = 1;
                                 placeTetromino();
@@ -967,26 +1004,4 @@ void prepare(){
     return NULL;
 }*/
 
-/*char** get_playing_field() {
-    char** playing_field = (char**)malloc(20 * sizeof(char*));  // Correct allocation
-    if (playing_field == NULL) return NULL;
 
-    for (int i = 0; i < 20; i++) {
-        playing_field[i] = (char*)malloc(10 * sizeof(char));  // Allocate 10 chars for each row
-        if (playing_field[i] == NULL) {
-            for (int j = 0; j < i; j++) {
-                free(playing_field[j]);
-            }
-            free(playing_field);
-            return NULL;
-        }
-    }
-
-    for (int y = 0; y < 20; y++) {
-        for (int x = 0; x < 10; x++) {
-            playing_field[y][x] = fieldValues[y][x];
-        }
-    }
-
-    return playing_field;
-}*/
