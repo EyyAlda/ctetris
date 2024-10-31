@@ -22,7 +22,7 @@ char fieldValues[20][10];
 
 int movingTetromino = 0;
 int gameFinished = 0;
-
+int game_over = 0;
 
 Tetromino *currentTetrominoPtr = NULL;
 
@@ -37,18 +37,17 @@ void createCurrentTetromino(){
     }
 }
 
+
+
 void gameOver(){
     printf("gameFinished!\n");
     if (currentTetrominoPtr != NULL){
         free(currentTetrominoPtr);
         currentTetrominoPtr = NULL;
     }
-    exit(1);
+    game_over = 1;
 }
 
-void key_handling(){
-
-}
 
 //checks if an about to be placed tetromino can be placed. If the space is taken it returns 0
 int checkForSpace(){
@@ -197,7 +196,6 @@ void createTetromino(){
         gameOver();
     }
     
-    placeTetromino();
 }
 
 void showPlayingField(){
@@ -368,7 +366,7 @@ void moveLeft(){
 void moveRight(){
     if (currentTetrominoPtr != NULL){
         //printf("\033[0;31mmoving right\033[0m\n");
-        if (currentTetrominoPtr->x_values[0] < 9 && currentTetrominoPtr->x_values[1] < 9 && currentTetrominoPtr->x_values[2] < 9 && currentTetrominoPtr->x_values[0] < 9) {
+        if (currentTetrominoPtr->x_values[0] < 9 && currentTetrominoPtr->x_values[1] < 9 && currentTetrominoPtr->x_values[2] < 9 && currentTetrominoPtr->x_values[3] < 9) {
             int canMove = 1;
             for (int y = 19; y >= 0; y--) {  // Start from the bottom for safe shifting
                 for (int x = 0; x < 10; x++) {  // Field has 10 columns
@@ -397,7 +395,7 @@ void moveDown() {
         //printf("after lock\n");
 
         // Check if any part of the tetromino can move down (i.e., not at the bottom row)
-        if (currentTetrominoPtr->y_values[0] < 19 && currentTetrominoPtr->y_values[1] < 19 && currentTetrominoPtr->y_values[2] < 19 && currentTetrominoPtr->y_values[2] < 19) {
+        if (currentTetrominoPtr->y_values[0] < 19 && currentTetrominoPtr->y_values[1] < 19 && currentTetrominoPtr->y_values[2] < 19 && currentTetrominoPtr->y_values[3] < 19) {
             int canMove = 1;
 
             // Loop over the entire field to check if the tetromino can move down

@@ -1,0 +1,34 @@
+.main_menu {
+    background-image: url('/home/lennard/Documents/myGames/Jtetris/textures/background.png');
+}
+
+.button-style {
+    font-size: 50px;
+    font-weight: bold;
+    background: #44444444;
+    color: white;
+    opacity: 0.8;
+    border: none;
+}
+.button-style:hover {
+    background: #666666;
+}
+.button-style:active {
+    background: #888888;
+}
+
+.stack {
+    background-color: #0000;
+}
+
+.paused_label {
+    font-size: 80px;
+    color: red;
+    font-weight: bold;
+}
+
+.end_button {
+    font-size: 40px;
+    font-weight: bold;
+    margin-top: 30px;
+}

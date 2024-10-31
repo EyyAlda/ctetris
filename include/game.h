@@ -12,7 +12,6 @@ typedef struct{
     int game_over;
 }Tetromino;
 
-//void* gameLoop(void *arg);
 
 void moveDown();
 
@@ -26,18 +25,21 @@ void rotate_tetromino();
 
 void createTetromino();
 
-//Tetromino* get_tetromino_ptr();
-
 void prepare();
 
 void showPlayingField();
 
 extern char fieldValues[20][10];
 
+extern int game_over;
+
 void free_pointer();
 
 void settle_tetromino();
 
-//char** get_playing_field();
+void gameOver();
+
+int checkForSpace();
+
 
 #endif
