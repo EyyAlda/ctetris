@@ -3,8 +3,11 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <errno.h>
 #include "../include/game.h"
 #include "../include/ui.h"
+#include "../include/get_files_path.h"
 
 int prepared = 0;
 // pointer to the tetris playing field
@@ -263,13 +266,25 @@ GtkWidget* create_game_screen(){
     gtk_widget_set_size_request(GTK_WIDGET(picture), new_width, window_height);
 }*/
 GtkWidget* create_main_menu(){
+    char *base_path = return_folders_path(); 
+    perror("after return_folders_path");
+    char additional_path[] = "/textures/background.png";
+    char background_img_path[strlen(base_path) + strlen(additional_path) + 1];
+    
+    perror("after background_img_path");
+    strcpy(background_img_path, base_path);
+    strcat(background_img_path, additional_path);
+    perror("after strcat");
+    free_folders_ptr();
+    
+    perror("after free_folders_ptr");
     // Create the main menu container
     GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     GtkWidget *main_menu_overlay = gtk_overlay_new();
     GtkWidget *background = gtk_scrolled_window_new();
     GtkWidget *button_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     GtkWidget *start_button = gtk_button_new_with_label("Start Game");
-    GtkWidget *background_picture = gtk_picture_new_for_filename("/home/lennard/Documents/myGames/Jtetris/textures/background.png");
+    GtkWidget *background_picture = gtk_picture_new_for_filename(background_img_path);
 
     //create Layout
     gtk_overlay_set_child(GTK_OVERLAY(main_menu_overlay), background);
