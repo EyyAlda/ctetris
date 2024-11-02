@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "../include/get_files_path.h"
 
-#ifdef __linux__
+#ifdef __unix__
     #include <errno.h>
+    #include <sys/stat.h>  // For mkdir and stat functions
 #endif
 
 #ifdef WIN64
@@ -11,7 +13,13 @@
     #include <shlobj.h>
 #endif
 
-#ifdef __linux__
+#ifdef __unix__
+
+int does_file_exist(const char * filepath){
+    struct stat buffer;
+    return (stat(filepath, &buffer) == 0);
+}
+
 char* output;
 
 char* return_folders_path(){
@@ -37,7 +45,14 @@ char* return_folders_path(){
     strcat(output, directory);
     fprintf(stdout, "return_folders_path: %s\n", output);
 
-    
+    if (!does_file_exist(output)){
+        errno = 2;
+        fprintf(stderr, "Path: %s: ", output);
+        perror("");
+        fprintf(stderr, "\n");
+        free(output);
+        output = NULL;
+    }
 
     return output;
 }
@@ -45,6 +60,8 @@ char* return_folders_path(){
 void free_folders_ptr(){
     free(output);
 }
+
+
 #endif
 
 #ifdef WIN64
@@ -99,5 +116,12 @@ char* return_folders_path() {
 
 void free_folders_ptr(){
     free(output);
+}
+
+int does_file_exist(const char * filepath){
+// Windows-specific method
+    DWORD attributes = GetFileAttributesA(filepath);
+    return (attributes != INVALID_FILE_ATTRIBUTES && 
+            !(attributes & FILE_ATTRIBUTE_DIRECTORY));
 }
 #endif

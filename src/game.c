@@ -966,6 +966,7 @@ void rotate_tetromino(){
 void free_pointer(){
     free(currentTetrominoPtr);
     currentTetrominoPtr = NULL;
+    fprintf(stdout, "pointer freed\n");
 }
 
 

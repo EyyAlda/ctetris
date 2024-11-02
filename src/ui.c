@@ -8,6 +8,8 @@
 #include "../include/game.h"
 #include "../include/ui.h"
 #include "../include/get_files_path.h"
+#include "../include/simple_version.h"
+#include "../include/advanced_version.h"
 
 int prepared = 0;
 // pointer to the tetris playing field
@@ -23,102 +25,50 @@ GtkWidget *end_button;
 // label to show paused or game over on the paused screen
 GtkWidget *paused_label;
 
+int is_initialized = 0;
+
+int are_files_available;
+
 int is_paused = 0;
 #define GRID_WIDTH 10
 #define GRID_HEIGHT 20
 
+
 static guint game_loop_id;
 static guint drawing_area_update_id;
+
 gulong key_handler_id;
 
-// draw a certain block of the tetromino playing field
-static void draw_block_with_border(cairo_t *cr, int x, int y, int block_size) {
-    // Fill the block depending on whether it's taken or not
-    switch(fieldValues[y][x]){
-        case '0':
-            cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);  // Black color for empty block
-            break;
-        case 'L':
-        case '1':
-            cairo_set_source_rgb(cr, 1.0, 0.65, 0.0);  // Orange
-            break;
-        case 'J':
-        case '2':
-            cairo_set_source_rgb(cr, 0.0, 0.0, 1.0);  // Blue
-            break;
-        case 'O':
-        case '3':
-            cairo_set_source_rgb(cr, 1.0, 1.0, 0.0);  // Yellow
-            break;
-        case 'I':
-        case '4':
-            cairo_set_source_rgb(cr, 0.0, 1.0, 1.0);  // Light-Blue
-            break;
-        case 'S':
-        case '5':
-            cairo_set_source_rgb(cr, 0.0, 1.0, 0.0);  // Green
-            break;
-        case 'Z':
-        case '6':
-            cairo_set_source_rgb(cr, 1.0, 0.0, 0.0);  // Red
-            break;
-        case 'T':
-        case '7':
-            cairo_set_source_rgb(cr, 0.5, 0.0, 0.5);  // Purple
-            break;
-        default:
-            cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);  // Black color for empty block
-            break;
+GdkPaintable* icons[8];
 
-    } 
+TextureAtlas* atlas;
 
-    cairo_rectangle(cr, x * block_size, y * block_size, block_size, block_size);
-    cairo_fill(cr);  // Fill the block
-
-    // Draw the border
-    cairo_set_source_rgb(cr, 0.4, 0.4, 0.4);  // White color for the border
-    cairo_set_line_width(cr, 2);              // Set border width (2 pixels)
-    cairo_rectangle(cr, x * block_size, y * block_size, block_size, block_size);
-    cairo_stroke(cr);  // Draw the border
-}
-
-// update the playing field
-static void show(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
-    int block_size_x = width / GRID_WIDTH;  // Calculate block size based on the new width
-    int block_size_y = height / GRID_HEIGHT;  // Calculate block size based on the new height
-
-    // Use the minimum block size to maintain square blocks
-    int block_size = MIN(block_size_x, block_size_y);
-    for (int y = 0; y < 20; y++){
-        for (int x = 0; x < 10; x++){
-            draw_block_with_border(cr, x, y, block_size); 
-        }        
-    }
-}
-
-gboolean on_tick_callback(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer user_data) {
-    gtk_widget_queue_draw(GTK_WIDGET(area));
-    return TRUE;
-}
-
-void end_game(){
-    if (game_loop_id != 0 && drawing_area_update_id != 0){
-        g_source_remove(game_loop_id);
-        prepare();
-        g_source_remove(drawing_area_update_id);
-        g_signal_handler_disconnect(key_controller, key_handler_id);
-        game_loop_id = 0;
-        drawing_area_update_id = 0;
-        prepared = 0;
-    }
-}
-
+RenderState* state;
+//
 void show_game_over_screen(){
     gtk_label_set_text(GTK_LABEL(paused_label), "GAME OVER!");
     gtk_button_set_label(GTK_BUTTON(end_button), "To Main Menu");
     gtk_stack_set_visible_child_name(GTK_STACK(app_stack), "pause_screen");
 }
 
+void end_game(){
+    if (game_loop_id != 0 && drawing_area_update_id != 0){ 
+        g_source_remove(game_loop_id);
+        prepare();
+        g_source_remove(drawing_area_update_id);
+        g_signal_handler_disconnect(key_controller, key_handler_id);
+        if (atlas != NULL && state != NULL) {
+            cleanup_texture_atlas(atlas);
+            cleanup_render_state(state);
+        }
+        game_loop_id = 0;
+        drawing_area_update_id = 0;
+        prepared = 0;
+        is_initialized = 0;
+        free_pointer();
+        fprintf(stdout, "end_game executed\n");
+    }
+}
 // game loop
 gboolean update_grid(gpointer user_data){
     if (!prepared) {
@@ -136,6 +86,54 @@ gboolean update_grid(gpointer user_data){
     }
     return TRUE;
 }
+
+
+// update the playing field
+void show_advanced(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
+    int block_size_x = width / GRID_WIDTH;  // Calculate block size based on the new width
+    int block_size_y = height / GRID_HEIGHT;  // Calculate block size based on the new height
+    
+    // Use the minimum block size to maintain square blocks
+    int block_size = MIN(block_size_x, block_size_y);
+
+
+    if (!is_initialized){
+        update_grid(NULL);
+        atlas = create_texture_atlas(icons, block_size);
+        state = create_render_state(fieldValues);
+        state->atlas = atlas;       
+        is_initialized = 1;
+    }
+
+    state->cr = cr;
+    render_field_batch(state); 
+}
+
+// update the playing field
+void show(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
+    int block_size_x = width / GRID_WIDTH;  // Calculate block size based on the new width
+    int block_size_y = height / GRID_HEIGHT;  // Calculate block size based on the new height
+    
+    // Use the minimum block size to maintain square blocks
+    int block_size = MIN(block_size_x, block_size_y);
+
+    for (int y = 0; y < 20; y++){
+        for (int x = 0; x < 10; x++){
+            draw_block_with_border(cr, x, y, block_size); 
+        }        
+    }
+}
+
+gboolean on_tick_callback(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer user_data) {
+    gtk_widget_queue_draw(GTK_WIDGET(area));
+    return TRUE;
+}
+
+
+
+
+
+
 
 void show_pause_screen(){
     if (is_paused){
@@ -203,12 +201,17 @@ void start_game(){
         game_over = 0;
     } 
     is_paused = 0;
+    prepared = 0;
+    is_initialized = 0;
+    prepare();
+    fprintf(stdout, "start_game executed\n");
         
 }
 
 
 
 gboolean on_window_destroy(GtkWidget *widget, gpointer app){
+    end_game(); 
     free_pointer();
     g_print("freed pointer\n");
     g_print("Quitting...\n");
@@ -240,31 +243,7 @@ GtkWidget* create_pause_screen(){
     return pause_box;
 }
 
-GtkWidget* create_game_screen(){
-    //GtkWidget *game_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    area = gtk_drawing_area_new();
-    gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(area), show, NULL, NULL);
 
-    //gtk_box_append(GTK_BOX(game_box), area);
-    return area;
-}
-/*static void on_window_size_allocate(GtkWidget *window, GtkAllocation *allocation, GtkPicture *picture)
-{
-    // Get the original image dimensions
-    GdkPaintable *pixbuf = gtk_picture_get_paintable(picture);
-    int orig_width = gdk_paintable_get_intrinsic_width(pixbuf);
-    int orig_height = gdk_paintable_get_intrinsic_height(pixbuf);
-
-    // Get the current window height
-    int window_height = gtk_widget_get_height(window);
-
-    // Calculate new width maintaining aspect ratio
-    double aspect_ratio = (double)orig_width / orig_height;
-    int new_width = window_height * aspect_ratio;
-
-    // Set the new size request for the picture
-    gtk_widget_set_size_request(GTK_WIDGET(picture), new_width, window_height);
-}*/
 GtkWidget* create_main_menu(){
     char *base_path = return_folders_path(); 
     perror("after return_folders_path");
@@ -328,7 +307,16 @@ GtkWidget* create_main_menu(){
 
     return main_box;
 }
-
+void on_resize(GtkWidget *widget, int width, int height, gpointer user_data) {
+    g_source_remove(game_loop_id);
+    g_source_remove(drawing_area_update_id);
+    cleanup_texture_atlas(atlas);
+    int block_size = update_window_size(width, height);
+    atlas = create_texture_atlas(icons, block_size);
+    game_loop_id = g_timeout_add(1000, update_grid, NULL);
+    drawing_area_update_id = gtk_widget_add_tick_callback(window, on_tick_callback, NULL, NULL);
+    gtk_widget_queue_draw(area);  // Request redraw
+}
 
 void on_activate(GtkApplication *app, gpointer user_data){
     window = gtk_application_window_new(app);
@@ -348,9 +336,16 @@ void on_activate(GtkApplication *app, gpointer user_data){
 
     // create main menu, game screen and pause screen
     GtkWidget *main_menu = create_main_menu();
-    GtkWidget *game_screen = create_game_screen();
+
+    GtkWidget *game_screen;
+    if (are_files_available){
+        game_screen = create_game_screen_advanced();
+    } else {
+        game_screen = create_game_screen();
+    }
     GtkWidget *pause_screen = create_pause_screen();
 
+    area = game_screen;
     // add main menu and game screen to the application stack
     gtk_stack_add_named(GTK_STACK(app_stack), main_menu, "main_menu");
     gtk_stack_add_named(GTK_STACK(app_stack), game_screen, "game_screen");
@@ -376,14 +371,33 @@ void on_activate(GtkApplication *app, gpointer user_data){
 
     gtk_window_set_child(GTK_WINDOW(window), app_stack);
 
+    g_signal_connect(area, "resize", G_CALLBACK(on_resize), state);
+
 
     gtk_window_present(GTK_WINDOW(window));
     // Connect the "destroy" signal of the window to the callback
     g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroy), app);
+
+    
+    if (are_files_available){
+        char *path = return_folders_path();
+        char tetromino_icons[][9] = {"i.png", "j.png", "l.png", "null.png", "o.png", "s.png", "t.png", "z.png"};
+        for (int i = 0; i < 8; i++){
+            char textures_path[strlen(path) + strlen("textures/") + strlen(tetromino_icons[i]) + 1];
+            strcpy(textures_path, path);
+            strcat(textures_path, "textures/");
+            strcat(textures_path, tetromino_icons[i]);
+            GdkTexture *texture = gdk_texture_new_from_filename(textures_path, NULL);
+            icons[i] = GDK_PAINTABLE(texture);
+        } 
+        fprintf(stdout, "Loaded Icons\n");
+    }
+    
 }
 
 int create_gui(int argc, char *argv[], int download_new){
     int status;
+    are_files_available = 0;
     GtkApplication *app = gtk_application_new("com.tetris", G_APPLICATION_DEFAULT_FLAGS);
 
     g_signal_connect(app, "activate", G_CALLBACK(on_activate), NULL);
