@@ -90,16 +90,16 @@ gboolean update_grid(gpointer user_data){
 
 // update the playing field
 void show_advanced(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
-    int block_size_x = width / GRID_WIDTH;  // Calculate block size based on the new width
+    /*int block_size_x = width / GRID_WIDTH;  // Calculate block size based on the new width
     int block_size_y = height / GRID_HEIGHT;  // Calculate block size based on the new height
     
     // Use the minimum block size to maintain square blocks
     int block_size = MIN(block_size_x, block_size_y);
-
-
+    g_print("%d\n", block_size);
+*/
     if (!is_initialized){
         update_grid(NULL);
-        atlas = create_texture_atlas(icons, block_size);
+        atlas = create_texture_atlas(icons, 50);
         state = create_render_state(fieldValues);
         state->atlas = atlas;       
         is_initialized = 1;
@@ -293,7 +293,7 @@ GtkWidget* create_main_menu(){
     // edit properties of the background_picture
     gtk_picture_set_can_shrink(GTK_PICTURE(background_picture), TRUE);
     gtk_widget_set_vexpand(background_picture, TRUE);
-    gtk_picture_set_content_fit(GTK_PICTURE(background_picture), GTK_CONTENT_FIT_FILL);
+    gtk_picture_set_content_fit(GTK_PICTURE(background_picture), GTK_CONTENT_FIT_COVER);
 
     // Load CSS
     GtkCssProvider *provider = gtk_css_provider_new();
@@ -306,16 +306,6 @@ GtkWidget* create_main_menu(){
 
 
     return main_box;
-}
-void on_resize(GtkWidget *widget, int width, int height, gpointer user_data) {
-    g_source_remove(game_loop_id);
-    g_source_remove(drawing_area_update_id);
-    cleanup_texture_atlas(atlas);
-    int block_size = update_window_size(width, height);
-    atlas = create_texture_atlas(icons, block_size);
-    game_loop_id = g_timeout_add(1000, update_grid, NULL);
-    drawing_area_update_id = gtk_widget_add_tick_callback(window, on_tick_callback, NULL, NULL);
-    gtk_widget_queue_draw(area);  // Request redraw
 }
 
 void on_activate(GtkApplication *app, gpointer user_data){
@@ -371,7 +361,6 @@ void on_activate(GtkApplication *app, gpointer user_data){
 
     gtk_window_set_child(GTK_WINDOW(window), app_stack);
 
-    g_signal_connect(area, "resize", G_CALLBACK(on_resize), state);
 
 
     gtk_window_present(GTK_WINDOW(window));
@@ -397,7 +386,7 @@ void on_activate(GtkApplication *app, gpointer user_data){
 
 int create_gui(int argc, char *argv[], int download_new){
     int status;
-    are_files_available = 0;
+    are_files_available = download_new;
     GtkApplication *app = gtk_application_new("com.tetris", G_APPLICATION_DEFAULT_FLAGS);
 
     g_signal_connect(app, "activate", G_CALLBACK(on_activate), NULL);
