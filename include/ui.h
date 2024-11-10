@@ -9,4 +9,5 @@ void show(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer dat
 
 void show_advanced(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data);
 
+
 #endif

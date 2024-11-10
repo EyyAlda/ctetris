@@ -16,3 +16,11 @@ CMakeUserPresets.json
 build/
 .cache/
 gtktests.c
+
+
+CMakePresets.json
+advanced_version.c
+advanced_version2.c
+hello
+toolchain.cmake
+ui.c

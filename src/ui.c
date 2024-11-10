@@ -25,6 +25,8 @@ GtkWidget *end_button;
 // label to show paused or game over on the paused screen
 GtkWidget *paused_label;
 
+GtkWidget *ghost_tetromino_switch;
+
 int is_initialized = 0;
 
 int are_files_available;
@@ -39,7 +41,7 @@ static guint drawing_area_update_id;
 
 gulong key_handler_id;
 
-GdkPaintable* icons[8];
+GdkPaintable* icons[9];
 
 TextureAtlas* atlas;
 
@@ -178,7 +180,7 @@ gboolean in_game_key_press(GtkEventController *controller, guint keyval, guint k
         case GDK_KEY_space:
             if (!is_paused){
                 printf("dropping\n");
-                drop();
+                drop(0);
             }
             break;
         case GDK_KEY_Escape:
@@ -203,7 +205,7 @@ void start_game(){
     is_paused = 0;
     prepared = 0;
     is_initialized = 0;
-    prepare();
+    set_show_ghost(gtk_switch_get_state(GTK_SWITCH(ghost_tetromino_switch)));
     fprintf(stdout, "start_game executed\n");
         
 }
@@ -254,21 +256,63 @@ GtkWidget* create_main_menu(){
     strcpy(background_img_path, base_path);
     strcat(background_img_path, additional_path);
     perror("after strcat");
-    free_folders_ptr();
-    
-    perror("after free_folders_ptr");
+
     // Create the main menu container
+    GtkWidget *main_menu_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget *main_menu_left = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget *main_menu_middle = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget *main_menu_right = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget *button_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     GtkWidget *main_menu_overlay = gtk_overlay_new();
     GtkWidget *background = gtk_scrolled_window_new();
-    GtkWidget *button_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     GtkWidget *start_button = gtk_button_new_with_label("Start Game");
     GtkWidget *background_picture = gtk_picture_new_for_filename(background_img_path);
+    ghost_tetromino_switch = gtk_switch_new();
+    GtkWidget *nothing_label = gtk_label_new(" ");
+    GtkWidget *ghost_label = gtk_label_new("Show Ghost-Tetrominos");
 
-    //create Layout
+    //edit properties of the main_menu_container
+    gtk_widget_set_halign(GTK_WIDGET(main_menu_container), GTK_ALIGN_FILL);
+    gtk_widget_set_valign(GTK_WIDGET(main_menu_container), GTK_ALIGN_FILL);
+    gtk_widget_set_vexpand(GTK_WIDGET(main_menu_container), TRUE); // Allow box to expand vertically
+    gtk_widget_set_hexpand(GTK_WIDGET(main_menu_container), TRUE); // Allow box to expand horizontially
+    
+    //edit properties of the switch
+    gtk_widget_set_halign(GTK_WIDGET(ghost_tetromino_switch), GTK_ALIGN_START);
+    gtk_widget_set_valign(GTK_WIDGET(ghost_tetromino_switch), GTK_ALIGN_START);
+    gtk_widget_add_css_class(GTK_WIDGET(ghost_tetromino_switch), "ghost-switch");
+
+    //edit properties of the ghost tetromino label
+    gtk_widget_set_halign(GTK_WIDGET(ghost_label), GTK_ALIGN_START);
+    gtk_widget_set_valign(GTK_WIDGET(ghost_label), GTK_ALIGN_START);
+    gtk_widget_add_css_class(GTK_WIDGET(ghost_label), "ghost-label");
+
+    //edit properties of the label
+    gtk_widget_set_valign(GTK_WIDGET(nothing_label), GTK_ALIGN_END);
+    gtk_widget_set_valign(GTK_WIDGET(nothing_label), GTK_ALIGN_END);
+    gtk_widget_add_css_class(GTK_WIDGET(nothing_label), "nothing-label");
+
+    //edit properties of the start button
+    gtk_widget_set_halign(GTK_WIDGET(start_button), GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(GTK_WIDGET(start_button), GTK_ALIGN_CENTER);
+
+
+
+    //create overlay Layout
     gtk_overlay_set_child(GTK_OVERLAY(main_menu_overlay), background);
-    gtk_overlay_add_overlay(GTK_OVERLAY(main_menu_overlay), button_container);
+    gtk_overlay_add_overlay(GTK_OVERLAY(main_menu_overlay), main_menu_middle);
+    gtk_overlay_add_overlay(GTK_OVERLAY(main_menu_overlay), main_menu_left);
+    gtk_overlay_add_overlay(GTK_OVERLAY(main_menu_overlay), main_menu_right);
+
+
+    //append items to the 3 vboxes
     gtk_box_append(GTK_BOX(button_container), start_button);
+    gtk_box_append(GTK_BOX(main_menu_left), ghost_label);
+    gtk_box_append(GTK_BOX(main_menu_left), ghost_tetromino_switch);
+    gtk_box_append(GTK_BOX(main_menu_middle), button_container);
+    gtk_box_append(GTK_BOX(main_menu_right), nothing_label);
+
     gtk_box_append(GTK_BOX(main_box), main_menu_overlay);
     gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(background), background_picture);
     
@@ -276,19 +320,42 @@ GtkWidget* create_main_menu(){
     gtk_widget_set_halign(GTK_WIDGET(main_menu_overlay), GTK_ALIGN_FILL);
     gtk_widget_set_valign(GTK_WIDGET(main_menu_overlay), GTK_ALIGN_FILL);
     gtk_widget_set_vexpand(GTK_WIDGET(main_menu_overlay), TRUE); // Allow box to expand vertically
-    gtk_widget_set_vexpand(GTK_WIDGET(main_menu_overlay), TRUE); // Allow box to expand vertically
+    gtk_widget_set_hexpand(GTK_WIDGET(main_menu_overlay), TRUE); // Allow box to expand vertically
 
     //edit properties of the main menu container
     gtk_widget_set_halign(GTK_WIDGET(main_box), GTK_ALIGN_FILL);
     gtk_widget_set_valign(GTK_WIDGET(main_box), GTK_ALIGN_FILL);
     gtk_widget_set_vexpand(GTK_WIDGET(main_box), TRUE); // Allow box to expand vertically
-    gtk_widget_set_hexpand(GTK_WIDGET(main_box), TRUE); // Allow box to expand horizontally
-    gtk_widget_set_size_request(main_box, 800, 600);
+    gtk_widget_set_hexpand(GTK_WIDGET(main_box), TRUE); // Allow box to expand horizontially
 
-    //center the button
-    gtk_widget_set_halign(GTK_WIDGET(button_container), GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(GTK_WIDGET(button_container), GTK_ALIGN_CENTER);
+    //edit properties of the box containing the start button
+    gtk_widget_set_halign(GTK_WIDGET(button_container), GTK_ALIGN_BASELINE_CENTER);
+    gtk_widget_set_valign(GTK_WIDGET(button_container), GTK_ALIGN_BASELINE_CENTER);
+    gtk_widget_add_css_class(GTK_WIDGET(button_container), "menu-box");
+
+
+    //set properties of the middle vbox
+    gtk_box_set_homogeneous(GTK_BOX(main_menu_middle), FALSE);
+    gtk_widget_set_halign(GTK_WIDGET(main_menu_middle), GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(GTK_WIDGET(main_menu_middle), GTK_ALIGN_CENTER);
     gtk_button_set_has_frame(GTK_BUTTON(start_button), TRUE);
+    gtk_widget_set_vexpand(GTK_WIDGET(main_menu_middle), TRUE); // Allow box to expand vertically
+    gtk_widget_add_css_class(GTK_WIDGET(main_menu_middle), "menu-box");
+
+    //set properties of the left vbox
+    gtk_widget_set_halign(GTK_WIDGET(main_menu_left), GTK_ALIGN_START);
+    gtk_widget_set_valign(GTK_WIDGET(main_menu_left), GTK_ALIGN_FILL);
+    gtk_widget_set_vexpand(GTK_WIDGET(main_menu_left), TRUE); // Allow box to expand vertically
+    gtk_widget_set_hexpand(GTK_WIDGET(main_menu_left), TRUE); // Allow box to expand horinzontially
+    gtk_widget_add_css_class(GTK_WIDGET(main_menu_left), "menu-box");
+
+
+    //set properties of the right vbox
+    gtk_widget_set_halign(GTK_WIDGET(main_menu_right), GTK_ALIGN_END);
+    gtk_widget_set_valign(GTK_WIDGET(main_menu_right), GTK_ALIGN_FILL);
+    gtk_widget_set_vexpand(GTK_WIDGET(main_menu_right), TRUE); // Allow box to expand vertically
+    gtk_widget_set_hexpand(GTK_WIDGET(main_menu_right), TRUE); // Allow box to expand horinzontially
+    gtk_widget_add_css_class(GTK_WIDGET(main_menu_right), "menu-box");
 
     // edit properties of the background_picture
     gtk_picture_set_can_shrink(GTK_PICTURE(background_picture), TRUE);
@@ -297,8 +364,19 @@ GtkWidget* create_main_menu(){
 
     // Load CSS
     GtkCssProvider *provider = gtk_css_provider_new();
-    gtk_css_provider_load_from_path(provider, "../src/style.css");
+
+    char stylesheet_path[strlen(base_path) + strlen("textures/style.css") + 1];
+    
+    strcpy(stylesheet_path, base_path);
+    strcat(stylesheet_path, "textures/style.css");
+
+    gtk_css_provider_load_from_path(provider, stylesheet_path);
     //gtk_widget_add_css_class(background, "main_menu");
+    free_folders_ptr();
+
+    g_object_unref(provider);
+    
+    perror("after free_folders_ptr");
 
     // Add title and start button
     g_signal_connect(start_button, "clicked", G_CALLBACK(on_start_button_clicked), NULL);
@@ -324,6 +402,9 @@ void on_activate(GtkApplication *app, gpointer user_data){
     gtk_widget_set_size_request(app_stack, 400, 200);
     gtk_widget_add_css_class(app_stack, "stack");
 
+    g_set_application_name("com.eyyalda.tetris");
+    g_set_prgname("Tetris");
+     
     // create main menu, game screen and pause screen
     GtkWidget *main_menu = create_main_menu();
 
@@ -370,8 +451,8 @@ void on_activate(GtkApplication *app, gpointer user_data){
     
     if (are_files_available){
         char *path = return_folders_path();
-        char tetromino_icons[][9] = {"i.png", "j.png", "l.png", "null.png", "o.png", "s.png", "t.png", "z.png"};
-        for (int i = 0; i < 8; i++){
+        char tetromino_icons[][10] = {"i.png", "j.png", "l.png", "null.png", "o.png", "s.png", "t.png", "z.png", "ghost.png"};
+        for (int i = 0; i < 9; i++){
             char textures_path[strlen(path) + strlen("textures/") + strlen(tetromino_icons[i]) + 1];
             strcpy(textures_path, path);
             strcat(textures_path, "textures/");
@@ -390,7 +471,6 @@ int create_gui(int argc, char *argv[], int download_new){
     GtkApplication *app = gtk_application_new("com.tetris", G_APPLICATION_DEFAULT_FLAGS);
 
     g_signal_connect(app, "activate", G_CALLBACK(on_activate), NULL);
-
 
     status = g_application_run(G_APPLICATION(app), argc, argv);
     g_object_unref(app);

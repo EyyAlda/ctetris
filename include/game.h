@@ -12,6 +12,7 @@ typedef struct{
     int game_over;
 }Tetromino;
 
+void set_show_ghost(int ghost);
 
 void moveDown();
 
@@ -19,7 +20,7 @@ void moveLeft();
 
 void moveRight();
 
-void drop();
+void drop(int ghost);
 
 void rotate_tetromino();
 

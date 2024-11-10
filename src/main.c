@@ -25,8 +25,8 @@ int check_for_files(){
         perror("");
     }
 
-    char tetromino_icons[][9] = {"i.png", "j.png", "l.png", "null.png", "o.png", "s.png", "t.png", "z.png"};
-    for (int i = 0; i < 8; i++){
+    char tetromino_icons[][10] = {"i.png", "j.png", "l.png", "null.png", "o.png", "s.png", "t.png", "z.png", "ghost.png"};
+    for (int i = 0; i < 9; i++){
         char path[strlen(textures_path) + strlen(tetromino_icons[i]) + 1]; 
         printf("after path decl.\n");
         printf("1: %s\n", tetromino_icons[i]);

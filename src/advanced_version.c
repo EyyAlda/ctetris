@@ -15,18 +15,16 @@ GtkWidget *game_area;
 TextureAtlas* create_texture_atlas(GdkPaintable** icons, int block_size) {
     TextureAtlas* atlas = g_malloc(sizeof(TextureAtlas));
     atlas->block_size = block_size;
-    atlas->atlas_width = block_size * 4;   // 4 icons per row
+    atlas->atlas_width = block_size * 5;   // 4 icons per row
     atlas->atlas_height = block_size * 2;  // 2 rows for 8 icons
     
-    atlas->surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
-                                              atlas->atlas_width, 
-                                              atlas->atlas_height);
+    atlas->surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, atlas->atlas_width, atlas->atlas_height);
     cairo_t* cr = cairo_create(atlas->surface);
     
     // Draw all icons into the atlas
-    for (int i = 0; i < 8; i++) {
-        int x = (i % 4) * block_size;
-        int y = (i / 4) * block_size;
+    for (int i = 0; i < 9; i++) {
+        int x = (i % 5) * block_size;
+        int y = (i / 5) * block_size;
         
         GtkSnapshot* snapshot = gtk_snapshot_new();
         gdk_paintable_snapshot(GDK_PAINTABLE(icons[i]), snapshot, 
@@ -69,20 +67,22 @@ void render_field_batch(RenderState* state) {
             
             // Map tile to atlas index
             switch(tile) {
-                case 'I': case '4': atlas_idx = 0; break;
-                case 'J': case '2': atlas_idx = 3; break;
-                case 'L': case '1': atlas_idx = 2; break;
-                case '0':          atlas_idx = 1; break;
-                case 'O': case '3': atlas_idx = 4; break;
-                case 'S': case '5': atlas_idx = 5; break;
-                case 'T': case '7': atlas_idx = 6; break;
-                case 'Z': case '6': atlas_idx = 7; break;
-                default:           atlas_idx = 1; break;
+                case 'I': case '4': atlas_idx = 0; break; //light-blue
+                case 'J': case '2': atlas_idx = 3; break; //orange
+                case 'L': case '1': atlas_idx = 4; break; //dark-blue
+                case '0':          atlas_idx = 2; break; //dark-grey
+                case 'O': case '3': atlas_idx = 1; break; //yellow
+                case 'S': case '5': atlas_idx = 5; break; //green
+                case 'T': case '7': atlas_idx = 9; break; //purple
+                case 'Z': case '6': atlas_idx = 8; break; //red
+                case 'G':           atlas_idx = 7; break; //light-grey
+                default:           atlas_idx = 2; break; //dark-grey
+                                                         
+                                                         
             }
-            
             // Calculate source coordinates in atlas
-            int atlas_x = (atlas_idx % 4) * bs;
-            int atlas_y = (atlas_idx / 4) * bs;
+            int atlas_x = (atlas_idx % 5) * bs;
+            int atlas_y = (atlas_idx / 5) * bs;
             
             // Draw the tile
             cairo_save(state->cr);

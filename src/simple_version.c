@@ -41,6 +41,9 @@ void draw_block_with_border(cairo_t *cr, int x, int y, int block_size) {
             case '7':
                 cairo_set_source_rgb(cr, 0.5, 0.0, 0.5);  // Purple
                 break;
+            case 'G':
+                cairo_set_source_rgb(cr, 0.6, 0.6, 0.6); // grey
+                break;
             default:
                 cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);  // Black color for empty block
                 break;
