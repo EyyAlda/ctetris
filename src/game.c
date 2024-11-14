@@ -403,7 +403,7 @@ void moveLeft(){
             for (int y = 19; y >= 0; y--) {  // Start from the bottom for safe shifting
                 for (int x = 0; x < 10; x++) {  // Field has 10 columns
                    if (fieldValues[y][x] == currentTetrominoPtr->fieldValue) {
-                        if (fieldValues[y][x - 1] != '0' && fieldValues[y][x - 1] != currentTetrominoPtr->fieldValue) {
+                        if (fieldValues[y][x - 1] != '0' && fieldValues[y][x - 1] != 'G' && fieldValues[y][x - 1] != currentTetrominoPtr->fieldValue) {
                             canMove = 0;
                         }
                     }
@@ -430,7 +430,7 @@ void moveRight(){
             for (int y = 19; y >= 0; y--) {  // Start from the bottom for safe shifting
                 for (int x = 0; x < 10; x++) {  // Field has 10 columns
                     if (fieldValues[y][x] == currentTetrominoPtr->fieldValue) {
-                        if (fieldValues[y][x + 1] != '0' && fieldValues[y][x + 1] != currentTetrominoPtr->fieldValue) {
+                        if (fieldValues[y][x + 1] != '0' && fieldValues[y][x + 1] != 'G' && fieldValues[y][x + 1] != currentTetrominoPtr->fieldValue) {
                             canMove = 0;
                         }
                     }

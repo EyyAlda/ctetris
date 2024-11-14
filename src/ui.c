@@ -10,6 +10,7 @@
 #include "../include/get_files_path.h"
 #include "../include/simple_version.h"
 #include "../include/advanced_version.h"
+#include "../include/background_gif.h"
 
 int prepared = 0;
 // pointer to the tetris playing field
@@ -250,7 +251,7 @@ GtkWidget *create_game_panel(){
     //load background image
     errno = 0;
     char *base_path = return_folders_path();
-    char add_path[] = "textures/background1.gif";
+    char add_path[] = "textures/background4.gif";
     char background_img_path[strlen(base_path) + strlen(add_path) + 1];
     
     perror("after background_img_path");
@@ -259,10 +260,13 @@ GtkWidget *create_game_panel(){
     fprintf(stdout, "Background Image: %s\n", background_img_path);
     perror("after strcat");
     free_folders_ptr();
+
+    int window_width = gtk_widget_get_width(GTK_WIDGET(window));
+    int window_height = gtk_widget_get_height(GTK_WIDGET(window));
  
     GtkWidget *game_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     GtkWidget *game_overlay = gtk_overlay_new();
-    GtkWidget *background = gtk_image_new_from_file(background_img_path);
+    GtkWidget *background = create_gif_animated_background(GTK_WIDGET(window), background_img_path, window_width, window_height);
     GtkWidget *game_screen;
 
     if (are_files_available){
