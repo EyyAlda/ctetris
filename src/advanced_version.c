@@ -132,13 +132,25 @@ int update_window_size(int width, int height) {
     return block_size;
 }
 
+GtkWidget *get_game_area(){
+    return game_area;
+}
 
 GtkWidget* create_game_screen_advanced(){
-    //GtkWidget *game_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget *container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_set_valign(GTK_WIDGET(container), GTK_ALIGN_CENTER);
+    gtk_widget_set_halign(GTK_WIDGET(container), GTK_ALIGN_CENTER);
+    gtk_widget_set_hexpand(GTK_WIDGET(container), TRUE);
+    gtk_widget_set_vexpand(GTK_WIDGET(container), TRUE);
+    gtk_widget_set_size_request(GTK_WIDGET(container), 500, 1000);
+
     game_area = gtk_drawing_area_new();
+    gtk_widget_set_size_request(game_area, 500, 1000);
+
+    gtk_box_append(GTK_BOX(container), game_area);
     gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(game_area), show_advanced, NULL, NULL);
     printf("DEBUG: create game screen\n");
 
     //gtk_box_append(GTK_BOX(game_box), area);
-    return game_area;
+    return container;
 }

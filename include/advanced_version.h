@@ -18,11 +18,14 @@ typedef struct {
     TextureAtlas* atlas;
     const char (*field)[10];  // Pointer to 2D array [20][10]
 } RenderState;
+
 GtkWidget* create_game_screen_advanced();
 
 TextureAtlas* create_texture_atlas(GdkPaintable** icons, int initial_block_size);
 
 RenderState* create_render_state(const char field[20][10]);
+
+GtkWidget *get_game_area();
 
 void cleanup_texture_atlas(TextureAtlas* atlas);
 

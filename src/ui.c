@@ -107,6 +107,7 @@ void show_advanced(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpo
         is_initialized = 1;
     }
 
+
     state->cr = cr;
     render_field_batch(state); 
 }
@@ -245,11 +246,65 @@ GtkWidget* create_pause_screen(){
     return pause_box;
 }
 
+GtkWidget *create_game_panel(){
+    //load background image
+    errno = 0;
+    char *base_path = return_folders_path();
+    char add_path[] = "textures/background1.gif";
+    char background_img_path[strlen(base_path) + strlen(add_path) + 1];
+    
+    perror("after background_img_path");
+    strcpy(background_img_path, base_path);
+    strcat(background_img_path, add_path);
+    fprintf(stdout, "Background Image: %s\n", background_img_path);
+    perror("after strcat");
+    free_folders_ptr();
+ 
+    GtkWidget *game_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget *game_overlay = gtk_overlay_new();
+    GtkWidget *background = gtk_image_new_from_file(background_img_path);
+    GtkWidget *game_screen;
+
+    if (are_files_available){
+        game_screen = create_game_screen_advanced();
+        area = get_game_area();
+    } else {
+        game_screen = create_game_screen();
+        area = game_screen;
+    }
+
+    gtk_widget_set_halign(GTK_WIDGET(game_container), GTK_ALIGN_FILL);
+    gtk_widget_set_valign(GTK_WIDGET(game_container), GTK_ALIGN_FILL);
+    gtk_widget_set_hexpand(GTK_WIDGET(game_container), TRUE);
+    gtk_widget_set_vexpand(GTK_WIDGET(game_container), TRUE);
+
+    gtk_widget_set_halign(GTK_WIDGET(game_overlay), GTK_ALIGN_FILL);
+    gtk_widget_set_valign(GTK_WIDGET(game_overlay), GTK_ALIGN_FILL);
+    gtk_widget_set_hexpand(GTK_WIDGET(game_overlay), TRUE);
+    gtk_widget_set_vexpand(GTK_WIDGET(game_overlay), TRUE);
+
+    gtk_widget_set_halign(GTK_WIDGET(background), GTK_ALIGN_FILL);
+    gtk_widget_set_valign(GTK_WIDGET(background), GTK_ALIGN_FILL);
+    gtk_widget_set_hexpand(GTK_WIDGET(background), TRUE);
+    gtk_widget_set_vexpand(GTK_WIDGET(background), TRUE);
+
+    gtk_widget_set_halign(GTK_WIDGET(game_screen), GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(GTK_WIDGET(game_screen), GTK_ALIGN_CENTER);
+    gtk_widget_set_hexpand(GTK_WIDGET(game_screen), TRUE);
+    gtk_widget_set_vexpand(GTK_WIDGET(game_screen), TRUE);
+
+    gtk_box_append(GTK_BOX(game_container), game_overlay);
+
+    gtk_overlay_set_child(GTK_OVERLAY(game_overlay), background);
+    gtk_overlay_add_overlay(GTK_OVERLAY(game_overlay), game_screen);
+
+    return game_container;
+}
 
 GtkWidget* create_main_menu(){
     char *base_path = return_folders_path(); 
     perror("after return_folders_path");
-    char additional_path[] = "/textures/background.png";
+    char additional_path[] = "textures/background.png";
     char background_img_path[strlen(base_path) + strlen(additional_path) + 1];
     
     perror("after background_img_path");
@@ -408,15 +463,10 @@ void on_activate(GtkApplication *app, gpointer user_data){
     // create main menu, game screen and pause screen
     GtkWidget *main_menu = create_main_menu();
 
-    GtkWidget *game_screen;
-    if (are_files_available){
-        game_screen = create_game_screen_advanced();
-    } else {
-        game_screen = create_game_screen();
-    }
+    GtkWidget *game_screen = create_game_panel();    
+
     GtkWidget *pause_screen = create_pause_screen();
 
-    area = game_screen;
     // add main menu and game screen to the application stack
     gtk_stack_add_named(GTK_STACK(app_stack), main_menu, "main_menu");
     gtk_stack_add_named(GTK_STACK(app_stack), game_screen, "game_screen");
