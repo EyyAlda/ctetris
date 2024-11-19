@@ -10,7 +10,8 @@
 #include "../include/get_files_path.h"
 #include "../include/simple_version.h"
 #include "../include/advanced_version.h"
-#include "../include/background_gif.h"
+#include "../include/gif_handler.h"
+#include "../include/settings.h"
 
 int prepared = 0;
 // pointer to the tetris playing field
@@ -232,6 +233,10 @@ void on_end_button_clicked(GtkWidget *widget, gpointer data){
     gtk_stack_set_visible_child_name(GTK_STACK(app_stack), "main_menu");
 }
 
+void on_quit_button_clicked(GtkWidget *widget, gpointer data){
+    g_print("Quitting\n");
+}
+
 GtkWidget* create_pause_screen(){
     GtkWidget *pause_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     paused_label = gtk_label_new("PAUSED");
@@ -266,7 +271,7 @@ GtkWidget *create_game_panel(){
  
     GtkWidget *game_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     GtkWidget *game_overlay = gtk_overlay_new();
-    GtkWidget *background = create_gif_animated_background(GTK_WIDGET(window), background_img_path, window_width, window_height);
+    GtkWidget *background = create_gif_player(background_img_path);
     GtkWidget *game_screen;
 
     if (are_files_available){
@@ -287,11 +292,11 @@ GtkWidget *create_game_panel(){
     gtk_widget_set_hexpand(GTK_WIDGET(game_overlay), TRUE);
     gtk_widget_set_vexpand(GTK_WIDGET(game_overlay), TRUE);
 
-    gtk_widget_set_halign(GTK_WIDGET(background), GTK_ALIGN_FILL);
+/*    gtk_widget_set_halign(GTK_WIDGET(background), GTK_ALIGN_FILL);
     gtk_widget_set_valign(GTK_WIDGET(background), GTK_ALIGN_FILL);
     gtk_widget_set_hexpand(GTK_WIDGET(background), TRUE);
     gtk_widget_set_vexpand(GTK_WIDGET(background), TRUE);
-
+*/
     gtk_widget_set_halign(GTK_WIDGET(game_screen), GTK_ALIGN_CENTER);
     gtk_widget_set_valign(GTK_WIDGET(game_screen), GTK_ALIGN_CENTER);
     gtk_widget_set_hexpand(GTK_WIDGET(game_screen), TRUE);
@@ -321,11 +326,13 @@ GtkWidget* create_main_menu(){
     GtkWidget *main_menu_left = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     GtkWidget *main_menu_middle = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     GtkWidget *main_menu_right = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    GtkWidget *button_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget *button_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     GtkWidget *main_menu_overlay = gtk_overlay_new();
     GtkWidget *background = gtk_scrolled_window_new();
     GtkWidget *start_button = gtk_button_new_with_label("Start Game");
+    GtkWidget *settings_button = gtk_button_new_with_label("Settings");
+    GtkWidget *quit_button = gtk_button_new_with_label("Quit");
     GtkWidget *background_picture = gtk_picture_new_for_filename(background_img_path);
     ghost_tetromino_switch = gtk_switch_new();
     GtkWidget *nothing_label = gtk_label_new(" ");
@@ -367,6 +374,8 @@ GtkWidget* create_main_menu(){
 
     //append items to the 3 vboxes
     gtk_box_append(GTK_BOX(button_container), start_button);
+    gtk_box_append(GTK_BOX(button_container), settings_button);
+    gtk_box_append(GTK_BOX(button_container), quit_button);
     gtk_box_append(GTK_BOX(main_menu_left), ghost_label);
     gtk_box_append(GTK_BOX(main_menu_left), ghost_tetromino_switch);
     gtk_box_append(GTK_BOX(main_menu_middle), button_container);
@@ -439,7 +448,10 @@ GtkWidget* create_main_menu(){
 
     // Add title and start button
     g_signal_connect(start_button, "clicked", G_CALLBACK(on_start_button_clicked), NULL);
+    g_signal_connect(quit_button, "clicked", G_CALLBACK(on_quit_button_clicked), NULL);
     gtk_widget_add_css_class(start_button, "button-style");
+    gtk_widget_add_css_class(settings_button, "button-style");
+    gtk_widget_add_css_class(quit_button, "button-style");
 
 
     return main_box;
@@ -471,10 +483,13 @@ void on_activate(GtkApplication *app, gpointer user_data){
 
     GtkWidget *pause_screen = create_pause_screen();
 
+    GtkWidget *settings_screen = create_settings_menu();
+
     // add main menu and game screen to the application stack
     gtk_stack_add_named(GTK_STACK(app_stack), main_menu, "main_menu");
     gtk_stack_add_named(GTK_STACK(app_stack), game_screen, "game_screen");
     gtk_stack_add_named(GTK_STACK(app_stack), pause_screen, "pause_screen");
+    gtk_stack_add_named(GTK_STACK(app_stack), settings_screen, "settings_screen");
 
     GtkCssProvider *provider = gtk_css_provider_new();
     gtk_css_provider_load_from_path(provider, "../src/style.css");

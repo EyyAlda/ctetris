@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
     src/simple_version.c
     src/advanced_version.c
     src/gif_handler.c
+    src/settings.c
 )
 
 # Find GTK4 and GLib using PkgConfig
